@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+
+  dbpostgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: online-shop
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 3000:8080
+    links: 
+      - dbpostgres:db
+    depends_on:
+      - dbpostgres
+      
