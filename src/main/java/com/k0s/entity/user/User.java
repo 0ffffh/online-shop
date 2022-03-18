@@ -1,9 +1,12 @@
 package com.k0s.entity.user;
 
+import java.util.StringJoiner;
+
 public class User {
     private long id;
     private String name;
     private String password;
+    private String salt;
     private Role role;
 
     public User() {
@@ -33,6 +36,14 @@ public class User {
         this.password = password;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
     public Role getRole() {
         return role;
     }
@@ -43,12 +54,12 @@ public class User {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("id=").append(id);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", role='").append(role).append('\'');
-        sb.append('}');
-        return sb.toString();
+        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("password='" + password + "'")
+                .add("salt='" + salt + "'")
+                .add("role=" + role)
+                .toString();
     }
 }

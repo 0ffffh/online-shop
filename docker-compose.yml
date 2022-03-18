@@ -12,14 +12,4 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: online-shop
 
-  adminer:
-    image: adminer
-    container_name: adminer
-    restart: always
-    ports:
-      - 3000:8080
-    links: 
-      - dbpostgres:db
-    depends_on:
-      - dbpostgres
       

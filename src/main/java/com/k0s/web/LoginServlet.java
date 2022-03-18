@@ -29,17 +29,19 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         try {
-            User user = userService.getUser(username, password);
-            System.out.println("##LOGIN :  " + user);
 
             String token = userService.login(username, password);
-
-            Cookie cookie = new Cookie("user-token", token);
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(10*60);
-            resp.addCookie(cookie);
-            resp.sendRedirect("/");
+            if(token != null){
+                Cookie cookie = new Cookie("user-token", token);
+                cookie.setSecure(true);
+                cookie.setHttpOnly(true);
+                cookie.setMaxAge(10*60);
+                resp.addCookie(cookie);
+                resp.sendRedirect("/");
+            } else {
+                System.out.println("##LOGIN ERROR ");
+                doGet(req, resp);
+            }
         } catch (Exception e) {
             System.out.println("##LOGIN ERROR " + e);
             doGet(req, resp);

@@ -18,6 +18,7 @@ public class UserRowMapper {
         user.setId(resultSet.getLong("id"));
         user.setName(resultSet.getString("name"));
         user.setPassword(resultSet.getString("password"));
+        user.setSalt(resultSet.getString("salt"));
         user.setRole(Role.getRole(resultSet.getString("role")));
 
         System.out.println(user);
