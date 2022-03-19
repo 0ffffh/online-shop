@@ -8,8 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HexFormat;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class PasswordCryptTest {
 
     @Test
@@ -36,7 +34,7 @@ class PasswordCryptTest {
                 "her people and restore\n" +
                 "freedom to the galaxy....";
 
-        PasswordCrypt.cryptPassword("user", "3345d81e0db911c7363f94d6122ac6cf");
+        PasswordCrypt.encryptPassword("user", "3345d81e0db911c7363f94d6122ac6cf");
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomeSalt = new byte[16];
         secureRandom.nextBytes(randomeSalt);

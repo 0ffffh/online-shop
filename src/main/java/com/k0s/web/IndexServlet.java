@@ -23,17 +23,14 @@ public class IndexServlet extends HttpServlet {
         try{
             Map<String, Object> pageVariables = new HashMap<>();
             pageVariables.put("products", productService.getAll());
-            String page = PageGenerator.getInstance().getPage("index.html", pageVariables);
 
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(page);
+            resp.getWriter().println(PageGenerator.getInstance().getPage("index.html", pageVariables));
 
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.setContentType("text/html;charset=utf-8");
-            resp.getWriter().println("500 Internal server error.");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

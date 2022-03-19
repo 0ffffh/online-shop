@@ -45,19 +45,17 @@ public class JdbcProductDao implements ProductDao<Product> {
     public Product get(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_QUERY)) {
+
             preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
-            if (!resultSet.next()) {
-                throw new RuntimeException("Product no found");
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+
+                if (!resultSet.next()) {
+                    throw new RuntimeException("Product id = " + id + " not found");
+                }
+
+                return productRowMapper.mapRow(resultSet);
             }
-
-            Product product = productRowMapper.mapRow(resultSet);
-
-            if (resultSet.next()) {
-                throw new IllegalStateException("More than one product found");
-            }
-            return product;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,9 +86,10 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 
+
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Remove product error " + e);
+            throw new RuntimeException("Remove product id = " + id + " error ");
         }
     }
 

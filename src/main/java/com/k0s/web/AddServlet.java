@@ -25,10 +25,6 @@ public class AddServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             Map<String, Object> pageVariables = new HashMap<>();
-            List<Product> list = productService.getAll();
-            for (Product product : list) {
-                System.out.println(product);
-            }
 
             pageVariables.put("products", productService.getAll());
 
@@ -37,7 +33,7 @@ public class AddServlet extends HttpServlet {
             resp.getWriter().println(PageGenerator.getInstance().getPage("add.html", pageVariables));
         }   catch (Exception e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -47,6 +43,7 @@ public class AddServlet extends HttpServlet {
             doGet(req, resp);
         } else {
             try{
+                //TODO: Product product = new Product(); переделать
                 Product product = new Product();
                 product.setName(req.getParameter("name"));
                 product.setPrice(Double.parseDouble(req.getParameter("price")));
@@ -54,7 +51,7 @@ public class AddServlet extends HttpServlet {
                 productService.add(product);
             } catch (Exception e) {
                 e.printStackTrace();
-                setError(resp);
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
             }
             doGet(req, resp);
         }
@@ -63,16 +60,9 @@ public class AddServlet extends HttpServlet {
     private boolean isValidRequest(HttpServletRequest req){
         String name = req.getParameter("name");
         String price = req.getParameter("price");
-        return name != null && name.length() > 0 &&
+        return name != null && name.matches("^[a-z0-9_-]{3,25}$") &&
                 price != null && price.length() > 0 &&
                 price.matches("[+]?\\d*\\.?\\d+");
     }
-
-    private void setError(HttpServletResponse resp) throws IOException {
-        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println("500 Internal server error.");
-    }
-
 
 }

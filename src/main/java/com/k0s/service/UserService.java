@@ -8,29 +8,16 @@ import java.util.*;
 
 public class UserService {
     private final UserDao userDao;
-    private final Map<String, User> session = new HashMap<>();
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public String login(String name, String password){
-        User user = userDao.getUser(name);
-        String cryptedPassword = PasswordCrypt.cryptPassword(password, user.getSalt());
-        if(user.getPassword().equals(cryptedPassword)){
-            String uuid = UUID.randomUUID().toString();
-            session.put(uuid, user);
-            return uuid;
-        }
-        return null;
+    public User getUser(String name) {
+        return userDao.getUser(name);
     }
-
-    public boolean isValidSession(String token) {
-        if (token == null){
-            return false;
-        }
-        return session.containsKey(token);
-    }
-
-
 }
+
+
+
+

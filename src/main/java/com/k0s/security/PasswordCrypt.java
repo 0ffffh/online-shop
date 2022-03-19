@@ -29,16 +29,16 @@ public class PasswordCrypt {
             "freedom to the galaxy....";
 
 
-    public static String cryptPassword(String password, String salt){
+    public static String encryptPassword(String password, String userSalt){
         System.out.println("password = " + password);
-        System.out.println("random salt = " + salt);
+        System.out.println("random salt = " + userSalt);
         System.out.println("static salt = " + SALT);
 
         String generatedPassword = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(SALT.getBytes(StandardCharsets.UTF_8));
-            md.update(salt.getBytes(StandardCharsets.UTF_8));
+            md.update(userSalt.getBytes(StandardCharsets.UTF_8));
             byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
             generatedPassword = HexFormat.of().formatHex(bytes);

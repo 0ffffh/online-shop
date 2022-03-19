@@ -27,10 +27,10 @@ public class SearchServlet extends HttpServlet {
 
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(PageGenerator.getInstance().getPage("manage.html", pageVariables));
+            resp.getWriter().println(PageGenerator.getInstance().getPage("index.html", pageVariables));
         }   catch (Exception e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
     }
@@ -41,16 +41,11 @@ public class SearchServlet extends HttpServlet {
             productService.remove(Long.parseLong(req.getParameter("id")));
         } catch (Exception e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         doGet(req, resp);
 
     }
 
-    private void setError(HttpServletResponse resp) throws IOException {
-        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println("500 Internal server error.");
-    }
 
 }

@@ -1,6 +1,7 @@
 package com.k0s.web;
 
 import com.k0s.entity.user.User;
+import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
 import com.k0s.util.PageGenerator;
 import jakarta.servlet.ServletException;
@@ -12,11 +13,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class LoginServlet extends HttpServlet {
-    private final UserService userService;
+    private final SecurityService securityService;
 
-    public LoginServlet(UserService userService) {
-        this.userService = userService;
+    public LoginServlet(SecurityService securityService) {
+        this.securityService = securityService;
     }
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,12 +32,13 @@ public class LoginServlet extends HttpServlet {
 
         try {
 
-            String token = userService.login(username, password);
+            String token = securityService.login(username, password);
             if(token != null){
                 Cookie cookie = new Cookie("user-token", token);
                 cookie.setSecure(true);
                 cookie.setHttpOnly(true);
                 cookie.setMaxAge(10*60);
+                System.out.println("COOKIE MAX AGE = " + cookie.getMaxAge());
                 resp.addCookie(cookie);
                 resp.sendRedirect("/");
             } else {

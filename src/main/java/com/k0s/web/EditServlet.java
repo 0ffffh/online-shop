@@ -24,6 +24,7 @@ public class EditServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
+            //TODO: Product product ????
             Product product = productService.get(Long.parseLong(req.getParameter("id")));
             Map<String, Object> pageVariables = new HashMap<>();
             pageVariables.put("id", product.getId());
@@ -36,9 +37,9 @@ public class EditServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage("edit.html", pageVariables));
 
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
 
     }
@@ -48,6 +49,8 @@ public class EditServlet extends HttpServlet {
 
 
         try {
+            //TODO: Product product = new Product(); переделать ?
+
             Product product = new Product();
             product.setId(Long.parseLong(req.getParameter("id")));
             product.setName(req.getParameter("name"));
@@ -57,15 +60,10 @@ public class EditServlet extends HttpServlet {
             productService.update(product);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         doGet(req, resp);
     }
 
-    private void setError(HttpServletResponse resp) throws IOException {
-        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println("500 Internal server error.");
-    }
 
 }

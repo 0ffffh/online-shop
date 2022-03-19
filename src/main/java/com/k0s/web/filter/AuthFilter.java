@@ -1,5 +1,6 @@
 package com.k0s.web.filter;
 
+import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -11,10 +12,11 @@ import java.io.IOException;
 
 public class AuthFilter implements Filter {
 
-    UserService userService;
 
-        public AuthFilter(UserService userService) {
-        this.userService = userService;
+    private final SecurityService securityService;
+
+    public AuthFilter(SecurityService securityService){
+        this.securityService = securityService;
     }
 
     @Override
@@ -29,7 +31,8 @@ public class AuthFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
         String requestUri = req.getRequestURI();
-        if("/".equals(requestUri) || "/login".equals(requestUri) || requestUri.startsWith("/resources")){
+
+        if (skipRequest(requestUri)){
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -37,8 +40,9 @@ public class AuthFilter implements Filter {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("user-token")) {
-                    if(userService.isValidSession(cookie.getValue())){
+                if ("user-token".equals(cookie.getName())) {
+//                    if(userService.isValidSession(cookie.getValue())){
+                    if(securityService.isValidSession(cookie.getValue())){
                         filterChain.doFilter(servletRequest, servletResponse);
                         return;
                     }
@@ -46,6 +50,22 @@ public class AuthFilter implements Filter {
             }
         }
         resp.sendRedirect("/login");
+    }
+
+    private boolean skipRequest(String requestUri){
+        if("/".equals(requestUri)){
+            return true;
+        }
+        if("/login".equals(requestUri)){
+            return true;
+        }
+        if("/search".equals(requestUri)){
+            return true;
+        }
+        if(requestUri.startsWith("/resources")){
+            return true;
+        }
+        return false;
     }
 
     @Override

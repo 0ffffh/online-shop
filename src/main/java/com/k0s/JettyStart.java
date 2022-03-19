@@ -4,6 +4,7 @@ import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.dao.jdbc.JdbcUserDao;
 import com.k0s.service.ProductService;
+import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
 import com.k0s.web.*;
@@ -35,7 +36,9 @@ public class JettyStart {
         JdbcUserDao jdbcUserDao = new JdbcUserDao(connectionFactory);
         UserService userService = new UserService(jdbcUserDao);
 
-        AuthFilter authFilter = new AuthFilter(userService);
+        SecurityService securityService = new SecurityService(userService);
+
+        AuthFilter authFilter = new AuthFilter(securityService);
         LogFilter logFilter = new LogFilter();
 
         flywayMigration(propertiesReader.getProperties());
@@ -49,7 +52,7 @@ public class JettyStart {
         servletContextHandler.addServlet(new ServletHolder(new EditServlet(productService)), "/admin/edit");
         servletContextHandler.addServlet(new ServletHolder(new SearchServlet(productService)), "/search");
         servletContextHandler.addServlet(new ServletHolder(new ResourcesServlet()), "/resources/*");
-        servletContextHandler.addServlet(new ServletHolder(new LoginServlet(userService)), "/login");
+        servletContextHandler.addServlet(new ServletHolder(new LoginServlet(securityService)), "/login");
         servletContextHandler.addServlet(new ServletHolder(new LogoutServlet()), "/logout");
 
 

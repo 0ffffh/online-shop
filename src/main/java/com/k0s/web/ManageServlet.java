@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class ManageServlet extends HttpServlet {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     public ManageServlet(ProductService productService) {
         this.productService = productService;
@@ -30,7 +30,7 @@ public class ManageServlet extends HttpServlet {
             resp.getWriter().println(PageGenerator.getInstance().getPage("manage.html", pageVariables));
         } catch (Exception e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
     }
@@ -41,16 +41,11 @@ public class ManageServlet extends HttpServlet {
             productService.remove(Integer.parseInt(req.getParameter("id")));
         } catch (Exception e) {
             e.printStackTrace();
-            setError(resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+
         }
         doGet(req, resp);
 
-    }
-
-    private void setError(HttpServletResponse resp) throws IOException {
-        resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        resp.setContentType("text/html;charset=utf-8");
-        resp.getWriter().println("500 Internal server error.");
     }
 
 }
