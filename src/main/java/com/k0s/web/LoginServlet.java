@@ -1,8 +1,6 @@
 package com.k0s.web;
 
-import com.k0s.entity.user.User;
 import com.k0s.service.SecurityService;
-import com.k0s.service.UserService;
 import com.k0s.util.PageGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -31,23 +29,28 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         try {
-
             String token = securityService.login(username, password);
-            if(token != null){
-                Cookie cookie = new Cookie("user-token", token);
-                cookie.setSecure(true);
-                cookie.setHttpOnly(true);
-                cookie.setMaxAge(10*60);
-                System.out.println("COOKIE MAX AGE = " + cookie.getMaxAge());
-                resp.addCookie(cookie);
-                resp.sendRedirect("/");
-            } else {
-                System.out.println("##LOGIN ERROR ");
-                doGet(req, resp);
-            }
-        } catch (Exception e) {
+//            if(token != null){
+            Cookie cookie = new Cookie("user-token", token);
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(10 * 60);
+            System.out.println("COOKIE MAX AGE = " + cookie.getMaxAge());
+            resp.addCookie(cookie);
+            resp.sendRedirect("/");
+//            } else {
+//                System.out.println("##LOGIN ERROR ");
+//                doGet(req, resp);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
             System.out.println("##LOGIN ERROR " + e);
             doGet(req, resp);
         }
     }
 }
+//    } catch (Exception e) {
+//            System.out.println("##LOGIN ERROR " + e);
+//            doGet(req, resp);
+//        }
+//    }
+//}

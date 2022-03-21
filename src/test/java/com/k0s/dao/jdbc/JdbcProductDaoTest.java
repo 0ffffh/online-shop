@@ -29,7 +29,7 @@ class JdbcProductDaoTest {
         ConnectionFactory connectionFactory = new ConnectionFactory(propertiesReader.getProperties());
         ProductDao<Product> productDao = new JdbcProductDao(connectionFactory);
 
-        productDao.remove(11);
+        productDao.remove(100500);
     }
 
     @Test

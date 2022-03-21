@@ -36,6 +36,7 @@ public class PasswordCrypt {
 
         String generatedPassword = null;
         try {
+            //TODO: вынести в отдельный метод генерацию хэша!!! 030.Au 18 1:02
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(SALT.getBytes(StandardCharsets.UTF_8));
             md.update(userSalt.getBytes(StandardCharsets.UTF_8));

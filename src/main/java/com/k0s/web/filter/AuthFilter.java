@@ -41,7 +41,6 @@ public class AuthFilter implements Filter {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("user-token".equals(cookie.getName())) {
-//                    if(userService.isValidSession(cookie.getValue())){
                     if(securityService.isValidSession(cookie.getValue())){
                         filterChain.doFilter(servletRequest, servletResponse);
                         return;
