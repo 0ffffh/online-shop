@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
 //            } else {
 //                System.out.println("##LOGIN ERROR ");
 //                doGet(req, resp);
-        } catch (IllegalAccessException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("##LOGIN ERROR " + e);
             doGet(req, resp);

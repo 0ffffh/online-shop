@@ -9,6 +9,9 @@
 
 </head>
 <body class="bg-secondary">
+<a href="/logout">
+    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout</button>
+</a>
 <div class="container">
 
 
@@ -59,13 +62,16 @@
 
                     <div class="st_column edit">
                         <a href="/admin/edit?id=${product.id}">
-                            <button class="button" type="submit">Edit</button>
+                            <button type="button" class="btn btn-dark"  type="submit">Edit</button>
                         </a>
                     </div>
                     <div class="st_column delete">
-                        <form method="post" action="/admin">
-                            <button class="button" name=id value="${product.id}" type="submit">Delete</button>
-                        </form>
+<!--                        <form method="post" action="/admin">-->
+<!--                            <button type="button" class="btn btn-outline-dark name=id value="${product.id}" type="submit">Delete</button>-->
+<!--                        </form>-->
+                        <a href="/admin/delete?id=${product.id}">
+                            <button type="button" class="btn btn-dark"  type="submit">Delete</button>
+                        </a>
                     </div>
 
                 </div>

@@ -1,4 +1,4 @@
-package com.k0s.web;
+package com.k0s.web.admin;
 
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;

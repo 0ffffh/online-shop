@@ -1,4 +1,4 @@
-package com.k0s.web;
+package com.k0s.web.admin;
 
 import com.k0s.service.ProductService;
 import com.k0s.util.PageGenerator;
@@ -35,6 +35,7 @@ public class ManageServlet extends HttpServlet {
 
     }
 
+//    TODO: move to deleteServlet
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {

@@ -30,19 +30,6 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">OnlineShop</a>
             <div class="collapse navbar-collapse">
-                <#if role == "admin">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-<!--                    <li class="nav-item">-->
-<!--                        <a class="nav-link active" aria-current="page" href="/admin">Manage</a>-->
-<!--                    </li>-->
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/admin/add">Add product</a>
-                    </li>
-
-                </ul>
-
-                </#if>
-
 
                 <#if role == "user">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -76,9 +63,6 @@
                 <h2>Products
                 </h2>
                 <div class="st_row">
-                    <#if role == "admin">
-                    <div class="st_column id">ID</div>
-                    </#if>
                     <div class="st_column name">Name</div>
                     <div class="st_column price">Price</div>
                     <div class="st_column date">Date</div>
@@ -89,34 +73,21 @@
                 <#list products as product>
                 <div class="st_row">
 
-                    <#if role == "admin">
-                    <div class="st_column id">${product.id}</div>
-                    </#if>
+
                     <div class="st_column name">${product.name}</div>
                     <div class="st_column price">${product.price?string("###,###,###.00")}</div>
                     <div class="st_column date">${product.creationDate}</div>
                     <div class="st_column description">${product.description}</div>
 
-                <#if role == "admin">
+
+<!--                <#if role == "user">-->
                 <div class="st_column edit">
-                    <a href="/admin/edit?id=${product.id}">
-                        <button type="button" class="btn btn-dark"  type="submit">Edit</button>
-                    </a>
-                </div>
-                <div class="st_column delete">
-                    <a href="/admin/delete?id=${product.id}">
+<!--                    <a href="/user/product/delete?id=${product.id}">-->
+                    <a href="/user/product/delete?id=${product?index}">
                         <button type="button" class="btn btn-dark"  type="submit">Delete</button>
                     </a>
                 </div>
-                </#if>
-
-                <#if role == "user">
-                <div class="st_column edit">
-                    <a href="/user/product/add?id=${product.id}">
-                        <button type="button" class="btn btn-dark"  type="submit">Add to cart</button>
-                    </a>
-                </div>
-                </#if>
+<!--                </#if>-->
 
                 </div>
                 </#list>

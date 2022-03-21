@@ -4,13 +4,15 @@ import com.k0s.entity.Product;
 import com.k0s.entity.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Session {
     private String token;
     private User user;
     private LocalDateTime expireDate;
-    private List<Product> cart;
+//    private List<Product> cart;
+    private List<Product> cart = new ArrayList<>();
 
     public Session() {
     }
@@ -51,5 +53,8 @@ public class Session {
 
     public void setCart(List<Product> cart) {
         this.cart = cart;
+    }
+    public void addToCart(Product product) {
+        this.cart.add(product);
     }
 }

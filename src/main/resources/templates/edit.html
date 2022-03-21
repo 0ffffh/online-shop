@@ -10,6 +10,9 @@
 
 </head>
 <body class="bg-secondary">
+<a href="/logout">
+    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout</button>
+</a>
 <div class="container">
 
 
@@ -85,7 +88,7 @@
                     <div class="st_column date"><input type="text" value=${price?string.computer} name="price"/></div>
                     <div class="st_column date"><textarea rows="3" cols="30" name="description"/>${description}</textarea></div>
                     <div class="st_column price">
-                        <button type="submit" class="button" name=id value="${id}">Update</button>
+                        <button type="button" class="btn btn-success name=id value="${id}">Update</button>
                     </div>
                 </div>
             </form>

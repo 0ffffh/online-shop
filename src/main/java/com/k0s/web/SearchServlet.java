@@ -1,5 +1,7 @@
 package com.k0s.web;
 
+import com.k0s.entity.user.Role;
+import com.k0s.security.Session;
 import com.k0s.service.ProductService;
 import com.k0s.util.PageGenerator;
 import jakarta.servlet.ServletException;
@@ -23,6 +25,18 @@ public class SearchServlet extends HttpServlet {
         try{
             System.out.println(req.getParameter("search"));
             Map<String, Object> pageVariables = new HashMap<>();
+            pageVariables.put("isLogin", req.getAttribute("isLogin"));
+
+            Session session = (Session) req.getAttribute("session");
+
+            if(session != null){
+                pageVariables.put("isLogin", true);
+                pageVariables.put("role", session.getUser().getRole());
+            } else{
+                pageVariables.put("isLogin", false);
+                pageVariables.put("role", Role.GUEST);
+            }
+
             pageVariables.put("products", productService.search(req.getParameter("search")));
 
             resp.setContentType("text/html;charset=utf-8");

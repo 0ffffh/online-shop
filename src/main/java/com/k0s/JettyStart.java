@@ -8,8 +8,15 @@ import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
 import com.k0s.web.*;
+import com.k0s.web.admin.AddServlet;
+import com.k0s.web.admin.DeleteServlet;
+import com.k0s.web.admin.EditServlet;
+import com.k0s.web.admin.ManageServlet;
 import com.k0s.web.filter.AuthFilter;
 import com.k0s.web.filter.LogFilter;
+import com.k0s.web.user.AddProductToCartServlet;
+import com.k0s.web.user.CartServlet;
+import com.k0s.web.user.DeleteProductFromCartServlet;
 import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -45,19 +52,31 @@ public class JettyStart {
 
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
-
+//        index
         servletContextHandler.addServlet(new ServletHolder(new IndexServlet(productService)), "");
+
+//        admin
         servletContextHandler.addServlet(new ServletHolder(new AddServlet(productService)), "/admin/add");
-        servletContextHandler.addServlet(new ServletHolder(new ManageServlet(productService)), "/admin");
         servletContextHandler.addServlet(new ServletHolder(new EditServlet(productService)), "/admin/edit");
+        servletContextHandler.addServlet(new ServletHolder(new DeleteServlet(productService)), "/admin/delete");
+
+//        user
+        servletContextHandler.addServlet(new ServletHolder(new AddProductToCartServlet(productService)), "/user/product/add");
+        servletContextHandler.addServlet(new ServletHolder(new DeleteProductFromCartServlet(productService)), "/user/product/delete");
+        servletContextHandler.addServlet(new ServletHolder(new CartServlet()), "/user/cart");
+
+
         servletContextHandler.addServlet(new ServletHolder(new SearchServlet(productService)), "/search");
         servletContextHandler.addServlet(new ServletHolder(new ResourcesServlet()), "/resources/*");
         servletContextHandler.addServlet(new ServletHolder(new LoginServlet(securityService)), "/login");
         servletContextHandler.addServlet(new ServletHolder(new LogoutServlet()), "/logout");
 
 
+//        filter
         servletContextHandler.addFilter(new FilterHolder(logFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
+//        servletContextHandler.addFilter(new FilterHolder(authFilter), "/admin/*", EnumSet.of(DispatcherType.REQUEST));
+//        servletContextHandler.addFilter(new FilterHolder(authFilter), "/user/*", EnumSet.of(DispatcherType.REQUEST));
 
         Server server = new Server(8080);
         server.setHandler(servletContextHandler);
