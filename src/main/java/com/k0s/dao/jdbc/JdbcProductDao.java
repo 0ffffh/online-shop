@@ -63,6 +63,7 @@ public class JdbcProductDao implements ProductDao<Product> {
         }
     }
 
+//    TODO: product == null ?
     @Override
     public void add(Product product) {
         try (Connection connection = dataSource.getConnection();

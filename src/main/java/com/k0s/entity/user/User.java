@@ -12,6 +12,14 @@ public class User {
     public User() {
     }
 
+    public User(long id, String name, String password, String salt, Role role) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.salt = salt;
+        this.role = role;
+    }
+
     public long getId() {
         return id;
     }
@@ -52,14 +60,14 @@ public class User {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-                .add("id=" + id)
-                .add("name='" + name + "'")
-                .add("password='" + password + "'")
-                .add("salt='" + salt + "'")
-                .add("role=" + role)
-                .toString();
-    }
+//    @Override
+//    public String toString() {
+//        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+//                .add("id=" + id)
+//                .add("name='" + name + "'")
+//                .add("password='" + password + "'")
+//                .add("salt='" + salt + "'")
+//                .add("role=" + role)
+//                .toString();
+//    }
 }

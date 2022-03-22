@@ -39,14 +39,16 @@ public class EditServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-
+        if (!isValidRequest(req)){
+            doGet(req, resp);
+        }
 
         try {
             //TODO: Product product = new Product(); переделать ?
@@ -63,6 +65,15 @@ public class EditServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         doGet(req, resp);
+    }
+
+
+    private boolean isValidRequest(HttpServletRequest req){
+        String name = req.getParameter("name");
+        String price = req.getParameter("price");
+        return name != null && name.matches("^[a-z0-9_-]{3,25}$") &&
+                price != null && price.length() > 0 &&
+                price.matches("[+]?\\d*\\.?\\d+");
     }
 
 

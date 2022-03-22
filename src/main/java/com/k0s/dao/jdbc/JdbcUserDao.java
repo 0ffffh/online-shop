@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class JdbcUserDao implements UserDao {
-//    private static final String GET_USER_QUERY = "SELECT * FROM users WHERE name = ? AND password = ?;";
     private static final String GET_USER_QUERY = "SELECT * FROM users WHERE name = ?;";
 
     private final DataSource dataSource;
@@ -28,17 +27,11 @@ public class JdbcUserDao implements UserDao {
 
             preparedStatement.setString(1, name);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {
                     throw new RuntimeException("Users not found");
                 }
-
-                User user = userRowMapper.mapRow(resultSet);
-
-                if (resultSet.next()) {
-                    throw new IllegalStateException("More than one user found");
-                }
-                return user;
+                return userRowMapper.mapRow(resultSet);
             }
 
         } catch (SQLException e) {
@@ -46,32 +39,4 @@ public class JdbcUserDao implements UserDao {
             throw new RuntimeException("Get user error " + e);
         }
     }
-
-//    @Override
-//    public User getUser(String name, String password) {
-//
-//        try (Connection connection = dataSource.getConnection();
-//             PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_QUERY)) {
-//
-//            preparedStatement.setString(1, name);
-//            preparedStatement.setString(2, password);
-//
-//            try (ResultSet resultSet = preparedStatement.executeQuery();) {
-//                if (!resultSet.next()) {
-//                    throw new RuntimeException("Users not found");
-//                }
-//
-//                User user = userRowMapper.mapRow(resultSet);
-//
-//                if (resultSet.next()) {
-//                    throw new IllegalStateException("More than one user found");
-//                }
-//                return user;
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Get user error " + e);
-//        }
-//    }
 }

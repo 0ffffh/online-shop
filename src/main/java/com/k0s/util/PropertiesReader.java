@@ -34,5 +34,15 @@ public class PropertiesReader {
             }
         }
     }
+
+    public void readProperties(String path) {
+        File file = new File(path);
+        try (InputStream inputStream = new FileInputStream(file.getAbsolutePath())) {
+            properties.load(inputStream);
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+            System.out.println("Can't read config file " + file.getAbsolutePath());
+        }
+    }
 }
 

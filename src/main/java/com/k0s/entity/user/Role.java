@@ -13,17 +13,19 @@ public enum Role {
     }
 
     public static Role getRole(String role) {
-        Role user = GUEST;
+//        Role user = GUEST;
         if(role == null || "".equals(role)){
             return GUEST;
         }
         for (Role roles : Role.values()){
             if (roles.role.equals(role)){
-                user = roles;
+//                user = roles;
+                return roles;
             }
         }
 
-        return user;
+//        return user;
+        return GUEST;
     }
 
     @Override

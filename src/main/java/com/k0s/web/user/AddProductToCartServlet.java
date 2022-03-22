@@ -17,7 +17,7 @@ public class AddProductToCartServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+//TODO убрать тру
         try {
             Session session = (Session) req.getAttribute("session");
             session.addToCart(productService.get(Long.parseLong(req.getParameter("id"))));

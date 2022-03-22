@@ -2,9 +2,6 @@ package com.k0s.service;
 
 import com.k0s.dao.UserDao;
 import com.k0s.entity.user.User;
-import com.k0s.security.PasswordCrypt;
-
-import java.util.*;
 
 public class UserService {
     private final UserDao userDao;

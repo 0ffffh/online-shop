@@ -22,9 +22,8 @@ public class ResourcesServlet extends HttpServlet {
             while ((count = bufferedInputStream.read(buffer, 0, buffer.length)) != -1)
                 resp.getOutputStream().write(buffer, 0, count);
         } catch (IOException e) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            System.out.println("File not found");
             e.printStackTrace();
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 }

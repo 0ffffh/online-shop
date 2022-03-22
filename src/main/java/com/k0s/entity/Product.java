@@ -15,6 +15,13 @@ public class Product {
     public Product() {
     }
 
+    public Product(long id, String name, double price, LocalDateTime creationDate, String description) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.description = description;
+    }
 
     public long getId() {
         return id;

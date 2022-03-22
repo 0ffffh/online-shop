@@ -24,23 +24,11 @@ public class IndexServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try{
             Map<String, Object> pageVariables = new HashMap<>();
-            System.out.println("isLogin = " + req.getAttribute("isLogin"));
-            System.out.println("Role = " + req.getAttribute("role"));
-            System.out.println("Session = " + req.getAttribute("session"));
 
             Session session = (Session) req.getAttribute("session");
 
-            if(session != null){
-                pageVariables.put("isLogin", true);
-                pageVariables.put("role", session.getUser().getRole());
-            } else{
-                pageVariables.put("isLogin", false);
-                pageVariables.put("role", Role.GUEST);
-            }
-
-
+            pageVariables.put("role", session == null ? Role.GUEST : session.getRole());
             pageVariables.put("products", productService.getAll());
-
 
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);

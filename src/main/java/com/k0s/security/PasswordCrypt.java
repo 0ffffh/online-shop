@@ -29,24 +29,13 @@ public class PasswordCrypt {
             "freedom to the galaxy....";
 
 
-    public static String encryptPassword(String password, String userSalt){
-        System.out.println("password = " + password);
-        System.out.println("random salt = " + userSalt);
-        System.out.println("static salt = " + SALT);
+    public static String encryptPassword(String password, String userSalt) throws NoSuchAlgorithmException {
 
-        String generatedPassword = null;
-        try {
-            //TODO: вынести в отдельный метод генерацию хэша!!! 030.Au 18 1:02
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(SALT.getBytes(StandardCharsets.UTF_8));
-            md.update(userSalt.getBytes(StandardCharsets.UTF_8));
-            byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(SALT.getBytes(StandardCharsets.UTF_8));
+        md.update(userSalt.getBytes(StandardCharsets.UTF_8));
+        byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
-            generatedPassword = HexFormat.of().formatHex(bytes);
-            System.out.println("generated pasword = " + generatedPassword);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return generatedPassword;
+        return HexFormat.of().formatHex(bytes);
     }
 }

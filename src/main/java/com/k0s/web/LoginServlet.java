@@ -30,17 +30,19 @@ public class LoginServlet extends HttpServlet {
 
         try {
             String token = securityService.login(username, password);
-//            if(token != null){
-            Cookie cookie = new Cookie("user-token", token);
-            cookie.setSecure(true);
-            cookie.setHttpOnly(true);
-            cookie.setMaxAge(10 * 60);
-            System.out.println("COOKIE MAX AGE = " + cookie.getMaxAge());
-            resp.addCookie(cookie);
-            resp.sendRedirect("/");
-//            } else {
-//                System.out.println("##LOGIN ERROR ");
-//                doGet(req, resp);
+            if (token != null) {
+                Cookie cookie = new Cookie("user-token", token);
+                cookie.setSecure(true);
+                cookie.setHttpOnly(true);
+                cookie.setMaxAge(10 * 60);
+                System.out.println("COOKIE MAX AGE = " + cookie.getMaxAge());
+                resp.addCookie(cookie);
+                resp.sendRedirect("/");
+//            }
+            } else {
+                System.out.println("##LOGIN ERROR ");
+                doGet(req, resp);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("##LOGIN ERROR " + e);

@@ -11,14 +11,13 @@
 </head>
 <body class="bg-secondary">
 
-<#if isLogin>
-<a href="/logout">
-    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout</button>
-</a>
-
-<#else>
+<#if role == "guest">
 <a href="/login">
     <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Login</button>
+</a>
+<#else>
+<a href="/logout">
+    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout</button>
 </a>
 </#if>
 
@@ -60,8 +59,10 @@
     <main class="st_viewport">
         <div class="st_wrap_table" data-table_id="0">
             <header class="st_table_header">
-                <h2>Products
-                </h2>
+                <h2>Products</h2>
+                <a class="nav-link active" href="/user/clearCart">
+                    <button class="btn btn-outline-danger" type="submit">Clear cart</button>
+                </a>
                 <div class="st_row">
                     <div class="st_column name">Name</div>
                     <div class="st_column price">Price</div>

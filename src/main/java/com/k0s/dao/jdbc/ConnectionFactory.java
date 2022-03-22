@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 public class ConnectionFactory implements DataSource {
-    private Properties properties;
+    private final Properties properties;
 
     public ConnectionFactory(Properties properties){
         this.properties = properties;
