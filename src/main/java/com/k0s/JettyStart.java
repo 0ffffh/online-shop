@@ -78,10 +78,12 @@ public class JettyStart {
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
 //        Server server = new Server(8080);
-        Server server = new Server();
+//        Server server = new Server();
+        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
         server.setHandler(servletContextHandler);
 
         server.start();
+        server.join();
 
     }
 
