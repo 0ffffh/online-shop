@@ -12,15 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 
 public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
     private static final String ROLE_ATT = "role";
     private static final String SESSION_ATT = "session";
-    private static final List<String> SKIP_AUTHORIZATION_PATH = new ArrayList<>();
-    private static final Properties PROPERTIES = new Properties();
+    private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
 
 
     private final SecurityService securityService;
@@ -31,9 +29,7 @@ public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        PROPERTIES.putAll(securityService.getProperties());
-        SKIP_AUTHORIZATION_PATH.addAll(Arrays.asList(PROPERTIES.getProperty("security.skipPath").split(",")));
-        System.out.println("AuthFilter init!");
+        SKIP_AUTHORIZATION_PATH_LIST.addAll(Arrays.asList(securityService.getProperties().getProperty("security.skipPath").split(",")));
     }
 
     @Override
@@ -41,23 +37,16 @@ public class AuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
-
         String requestPath = req.getServletPath();
-        String requestUri = req.getRequestURI();
-        System.out.println("REQUEST PATH = " + requestPath);
-        System.out.println("REQUEST URI = " + requestUri);
-//        if (skipAutorization(requestPath)) {
-        if (SKIP_AUTHORIZATION_PATH.contains(requestUri)) {
-            System.out.println("AUTH SKIP PATH = " + requestPath);
+
+        if (SKIP_AUTHORIZATION_PATH_LIST.contains(requestPath)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
-        System.out.println("=====AFTER SKIP======");
         Session session = null;
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
-            System.out.println("CHECK COOKIE");
             for (Cookie cookie : cookies) {
                 if (USER_TOKEN.equals(cookie.getName())) {
                     session = securityService.getSession(cookie.getValue());
@@ -72,58 +61,20 @@ public class AuthFilter implements Filter {
             req.setAttribute(SESSION_ATT, session);
         }
 
-//        if (requestPath.startsWith("/admin")){
-        if (requestPath.startsWith(PROPERTIES.getProperty("security.adminPath"))){
-            System.out.print(" IN ADMIN : ");
-            if (isAllow(session, Role.ADMIN)){
-                System.out.println(" session role = " + session.getRole());
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else {
-                System.out.println(" access deny ");
-                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        for (Role role : Role.values()) {
+            if (requestPath.contains(role.toString())) {
+                if (isAllow(session, role)) {
+                    filterChain.doFilter(servletRequest, servletResponse);
+                } else {
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }
+                return;
             }
-            return;
         }
 
-//        if (requestPath.startsWith("/user")){
-        if (requestPath.startsWith(PROPERTIES.getProperty("security.userPath"))){
-            System.out.print(" IN USER : ");
-            if (isAllow(session, Role.USER)){
-                System.out.println(" session role = " + session.getRole());
-                filterChain.doFilter(servletRequest, servletResponse);
-            } else {
-                System.out.println(" access deny ");
-                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
-            }
-            return;
-        }
-
-        System.out.println("####doFilter");
         filterChain.doFilter(servletRequest, servletResponse);
 
     }
-
-//    private boolean skipAutorization(String requestUri) {
-//        if ("/login".equals(requestUri)) {
-//            return true;
-//        }
-//        if ("/resources".equals(requestUri)) {
-//            return true;
-//        }
-//        if ("/favicon.ico".equals(requestUri)) {
-//            return true;
-//        }
-//        return false;
-//    }
-//    private boolean skipAutorization(String requestUri) {
-//        return SKIP_AUTHORIZATION_PATH.contains(requestUri);
-//        for (String s : SKIP_AUTHORIZATION_PATH) {
-//            if( requestUri.equals(s)){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     private boolean isAllow(Session session, Role role) {
         if (session == null) {
@@ -131,7 +82,6 @@ public class AuthFilter implements Filter {
         }
         return role.equals(session.getRole());
     }
-
 
     @Override
     public void destroy() {

@@ -8,18 +8,7 @@ import java.sql.SQLException;
 
 public class ProductRowMapper {
 
-    public ProductRowMapper() {
-    }
-
-    public Product mapRow(ResultSet resultSet) throws SQLException {
-
-//        Product product = new Product();
-//        product.setId(resultSet.getLong("id"));
-//        product.setName(normalize(resultSet.getString("name")));
-//        product.setPrice(resultSet.getDouble("price"));
-//        product.setDescription(normalize(resultSet.getString("description")));
-//        product.setCreationDate(resultSet.getTimestamp("creation_date").toLocalDateTime());
-//        return product;
+    public static Product mapRow(ResultSet resultSet) throws SQLException {
 
         return new Product(resultSet.getLong("id"),
                 normalize(resultSet.getString("name")),
@@ -28,7 +17,7 @@ public class ProductRowMapper {
                 normalize(resultSet.getString("description")));
     }
 
-    private String normalize(String result){
+    private static String normalize(String result){
         return result == null ? "" : result;
     }
 }

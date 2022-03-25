@@ -13,7 +13,6 @@ public class JdbcUserDao implements UserDao {
     private static final String GET_USER_QUERY = "SELECT * FROM users WHERE name = ?;";
 
     private final DataSource dataSource;
-    private final UserRowMapper userRowMapper = new UserRowMapper();
 
     public JdbcUserDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -31,12 +30,12 @@ public class JdbcUserDao implements UserDao {
                 if (!resultSet.next()) {
                     throw new RuntimeException("Users not found");
                 }
-                return userRowMapper.mapRow(resultSet);
+                return UserRowMapper.mapRow(resultSet);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Get user error " + e);
+            throw new RuntimeException("Get user error " + e.getMessage());
         }
     }
 }

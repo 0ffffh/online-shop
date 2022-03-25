@@ -1,6 +1,6 @@
-INSERT INTO products (name, price, creation_date, description) values ('пиво', 550.5, CURRENT_TIMESTAMP, 'пиво пенно');
-INSERT INTO products (name, price, creation_date, description) values ('пиво', 330.3, CURRENT_TIMESTAMP, 'пиво сетлое');
-INSERT INTO products (name, price, creation_date, description) values ('водка', 220.2, CURRENT_TIMESTAMP, 'не пиво');
-INSERT INTO products (name, price, creation_date, description) values ('пиво', 220.2, CURRENT_TIMESTAMP, 'не водка');
-INSERT INTO products (name, price, creation_date, description) values ('пиво', 220.2, CURRENT_TIMESTAMP, 'не вода');
+INSERT INTO products (name, price, creation_date, description) values ('Cookies', 550.5, CURRENT_TIMESTAMP, 'Cookies and crackers');
+INSERT INTO products (name, price, creation_date, description) values ('Meat', 330.3, CURRENT_TIMESTAMP, 'Meat and meat products');
+INSERT INTO products (name, price, creation_date, description) values ('Bread', 220.2, CURRENT_TIMESTAMP, 'Bread');
+INSERT INTO products (name, price, creation_date, description) values ('Beer', 220.2, CURRENT_TIMESTAMP, 'beer is bread');
+
 

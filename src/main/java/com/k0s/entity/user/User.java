@@ -60,14 +60,14 @@ public class User {
         this.role = role;
     }
 
-//    @Override
-//    public String toString() {
-//        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
-//                .add("id=" + id)
-//                .add("name='" + name + "'")
-//                .add("password='" + password + "'")
-//                .add("salt='" + salt + "'")
-//                .add("role=" + role)
-//                .toString();
-//    }
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", User.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("name='" + name + "'")
+                .add("password='" + password + "'")
+                .add("salt='" + salt + "'")
+                .add("role=" + role)
+                .toString();
+    }
 }

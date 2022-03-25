@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class LoginServlet extends HttpServlet {
+    private final static String LOGIN_HTML_PAGE = "login.html";
     private final SecurityService securityService;
 
     public LoginServlet(SecurityService securityService) {
@@ -20,7 +21,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().println(PageGenerator.getInstance().getPage("login.html", null));
+        resp.getWriter().println(PageGenerator.getInstance().getPage(LOGIN_HTML_PAGE, null));
     }
 
     @Override
@@ -28,31 +29,16 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("name");
         String password = req.getParameter("password");
 
-        try {
-            String token = securityService.login(username, password);
-            if (token != null) {
-                Cookie cookie = new Cookie("user-token", token);
-                cookie.setSecure(true);
-                cookie.setHttpOnly(true);
-                cookie.setMaxAge(10 * 60);
-                System.out.println("COOKIE MAX AGE = " + cookie.getMaxAge());
-                resp.addCookie(cookie);
-                resp.sendRedirect("/");
-//            }
-            } else {
-                System.out.println("##LOGIN ERROR ");
-                doGet(req, resp);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("##LOGIN ERROR " + e);
+        String token = securityService.login(username, password);
+        if (token != null) {
+            Cookie cookie = new Cookie("user-token", token);
+            cookie.setMaxAge(Integer.parseInt(securityService.getProperties().getProperty("security.sessionTimeout")));
+            resp.addCookie(cookie);
+            resp.sendRedirect("/");
+        } else {
             doGet(req, resp);
         }
+
     }
 }
-//    } catch (Exception e) {
-//            System.out.println("##LOGIN ERROR " + e);
-//            doGet(req, resp);
-//        }
-//    }
-//}
+

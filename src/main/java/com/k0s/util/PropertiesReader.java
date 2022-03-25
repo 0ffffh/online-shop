@@ -7,10 +7,11 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesReader {
-    private static final String DEFAULT_DB_CONFIG_PATH = "db/db.properties";
-    private final String path;
+    private static final String DEFAULT_CONFIG_PATH = "application.properties";
+    private String path;
     private final Properties properties = new Properties();
 
+    public PropertiesReader(){}
     public PropertiesReader(String path) {
         this.path = path;
     }
@@ -25,12 +26,12 @@ public class PropertiesReader {
             properties.load(inputStream);
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
-            System.out.println("Can't read config file " + file.getAbsolutePath() + " try load default config " + DEFAULT_DB_CONFIG_PATH);
-            try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(DEFAULT_DB_CONFIG_PATH)) {
+            System.out.println("Can't read config file " + file.getAbsolutePath() + " try load default config " + DEFAULT_CONFIG_PATH);
+            try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_PATH)) {
                 properties.load(inputStream);
             } catch (IOException ex) {
                 ex.printStackTrace();
-                throw new RuntimeException("Cant load config DB properties " + e);
+                throw new RuntimeException("Cant load DB config");
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.k0s.security;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -8,53 +9,19 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HexFormat;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 class PasswordCryptTest {
 
     @Test
     void cryptPassword() throws NoSuchAlgorithmException {
-        String SALT = "It is a period of civil war.\n" +
-                "Rebel spaceships, striking\n" +
-                "from a hidden base, have won\n" +
-                "their first victory against\n" +
-                "the evil Galactic Empire.\n" +
-                "\n" +
-                "During the battle, Rebel\n" +
-                "spies managed to steal secret\n" +
-                "plans to the Empire's\n" +
-                "ultimate weapon, the DEATH\n" +
-                "STAR, an armored space\n" +
-                "station with enough power to\n" +
-                "destroy an entire planet.\n" +
-                "\n" +
-                "Pursued by the Empire's\n" +
-                "sinister agents, Princess\n" +
-                "Leia races home aboard her\n" +
-                "starship, custodian of the\n" +
-                "stolen plans that can save\n" +
-                "her people and restore\n" +
-                "freedom to the galaxy....";
 
-        PasswordCrypt.encryptPassword("user", "3345d81e0db911c7363f94d6122ac6cf");
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] randomeSalt = new byte[16];
-        secureRandom.nextBytes(randomeSalt);
-        String hashSalt = HexFormat.of().formatHex(randomeSalt);
-        System.out.println("ROOT SALT = " + hashSalt);
+        MockedStatic<PasswordCrypt> mockedStatic = mockStatic(PasswordCrypt.class);
+        mockedStatic.when(() -> PasswordCrypt.encryptPassword("user", "3345d81e0db911c7363f94d6122ac6cf")).thenReturn("fc4e73a372f9b1637391f845e002644e6a23f32e3ff3302427f8825dfe3d8fde368a26f6e1a312cbeb5d69a5b9bfdbbb0cfb6844264f3b3e1d46c3fd30e220f5");
 
-        String password  = "user";
-
-
-        MessageDigest md = MessageDigest.getInstance("SHA-512");
-
-        md.update(SALT.getBytes(StandardCharsets.UTF_8));
-        md.update(randomeSalt);
-
-
-        byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-        String myHash = HexFormat.of().formatHex(bytes);
-
-        System.out.println("ROOT PASSWORD =  " + myHash);
-
+        assertEquals("fc4e73a372f9b1637391f845e002644e6a23f32e3ff3302427f8825dfe3d8fde368a26f6e1a312cbeb5d69a5b9bfdbbb0cfb6844264f3b3e1d46c3fd30e220f5",
+                PasswordCrypt.encryptPassword("user", "3345d81e0db911c7363f94d6122ac6cf"));
 
     }
 }

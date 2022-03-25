@@ -9,14 +9,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EditServlet extends HttpServlet {
+public class EditProductServlet extends HttpServlet {
 
     private final ProductService productService;
 
-    public EditServlet(ProductService productService){
+    public EditProductServlet(ProductService productService){
         this.productService = productService;
     }
 
@@ -24,7 +25,6 @@ public class EditServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         try {
-            //TODO: Product product ????
             Product product = productService.get(Long.parseLong(req.getParameter("id")));
             Map<String, Object> pageVariables = new HashMap<>();
             pageVariables.put("id", product.getId());
@@ -35,7 +35,7 @@ public class EditServlet extends HttpServlet {
 
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(PageGenerator.getInstance().getPage("edit.html", pageVariables));
+            resp.getWriter().println(PageGenerator.getInstance().getPage("editProduct.html", pageVariables));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,20 +49,15 @@ public class EditServlet extends HttpServlet {
         if (!isValidRequest(req)){
             doGet(req, resp);
         }
-
         try {
-            //TODO: Product product = new Product(); переделать ?
-
-            Product product = new Product();
-            product.setId(Long.parseLong(req.getParameter("id")));
-            product.setName(req.getParameter("name"));
-            product.setPrice(Double.parseDouble(req.getParameter("price")));
-            product.setDescription(req.getParameter("description"));
-
-            productService.update(product);
-        } catch (NumberFormatException e) {
+            productService.update(new Product(Long.parseLong(req.getParameter("id")),
+                    req.getParameter("name"),
+                    Double.parseDouble(req.getParameter("price")),
+                    LocalDateTime.now(),
+                    req.getParameter("description")));
+        } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         doGet(req, resp);
     }

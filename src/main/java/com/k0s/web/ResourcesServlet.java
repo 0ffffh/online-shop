@@ -16,7 +16,6 @@ public class ResourcesServlet extends HttpServlet {
 
             resp.setContentType(getServletContext().getMimeType(req.getRequestURI()));
             resp.setStatus(HttpServletResponse.SC_OK);
-
             int count;
             byte[] buffer = new byte[8192];
             while ((count = bufferedInputStream.read(buffer, 0, buffer.length)) != -1)

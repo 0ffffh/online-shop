@@ -11,9 +11,9 @@ import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
 import com.k0s.web.*;
-import com.k0s.web.admin.AddServlet;
-import com.k0s.web.admin.DeleteServlet;
-import com.k0s.web.admin.EditServlet;
+import com.k0s.web.admin.AddProductServlet;
+import com.k0s.web.admin.DeleteProductServlet;
+import com.k0s.web.admin.EditProductServlet;
 import com.k0s.web.filter.AuthFilter;
 import com.k0s.web.user.AddProductToCartServlet;
 import com.k0s.web.user.CartServlet;
@@ -30,14 +30,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class JettyStart {
-    private static final String DEFAULT_DB_PROPERTIES = "db.properties";
     private static final String DEFAULT_APP_PROPERTIES = "application.properties";
 
 
     public static void main(String[] args) throws Exception {
 
-        PropertiesReader propertiesReader = new PropertiesReader(DEFAULT_DB_PROPERTIES);
+        PropertiesReader propertiesReader = new PropertiesReader(DEFAULT_APP_PROPERTIES);
         propertiesReader.readProperties();
+
         ConnectionFactory connectionFactory = new ConnectionFactory(propertiesReader.getProperties());
 
         ProductDao<Product> jdbcProductDao = new JdbcProductDao(connectionFactory);
@@ -46,15 +46,9 @@ public class JettyStart {
         UserDao jdbcUserDao = new JdbcUserDao(connectionFactory);
         UserService userService = new UserService(jdbcUserDao);
 
-
-        propertiesReader.readProperties(DEFAULT_APP_PROPERTIES);
-        Properties applicationProperties = propertiesReader.getProperties();
-
-
-        SecurityService securityService = new SecurityService(userService, applicationProperties);
+        SecurityService securityService = new SecurityService(userService, propertiesReader.getProperties());
 
         AuthFilter authFilter = new AuthFilter(securityService);
-//        LogFilter logFilter = new LogFilter();
 
         flywayMigration(propertiesReader.getProperties());
 
@@ -64,38 +58,24 @@ public class JettyStart {
         servletContextHandler.addServlet(new ServletHolder(new IndexServlet(productService)), "");
 
 //        admin
-//        servletContextHandler.addServlet(new ServletHolder(new AddServlet(productService)), "/admin/add");
-//        servletContextHandler.addServlet(new ServletHolder(new EditServlet(productService)), "/admin/edit");
-//        servletContextHandler.addServlet(new ServletHolder(new DeleteServlet(productService)), "/admin/delete");
-        servletContextHandler.addServlet(new ServletHolder(new AddServlet(productService)), applicationProperties.getProperty("servlet.adminAddProductPath"));
-        servletContextHandler.addServlet(new ServletHolder(new EditServlet(productService)), applicationProperties.getProperty("servlet.adminEditProductPath"));
-        servletContextHandler.addServlet(new ServletHolder(new DeleteServlet(productService)), applicationProperties.getProperty("servlet.adminDeleteProductPath"));
+        servletContextHandler.addServlet(new ServletHolder(new AddProductServlet(productService)), "/admin/product/add");
+        servletContextHandler.addServlet(new ServletHolder(new EditProductServlet(productService)), "/admin/product/edit");
+        servletContextHandler.addServlet(new ServletHolder(new DeleteProductServlet(productService)), "/admin/product/delete");
 
 //        user
-//        servletContextHandler.addServlet(new ServletHolder(new AddProductToCartServlet(productService)), "/user/product/add");
-//        servletContextHandler.addServlet(new ServletHolder(new DeleteProductFromCartServlet()), "/user/product/delete");
-//        servletContextHandler.addServlet(new ServletHolder(new CartServlet()), "/user/cart");
-        servletContextHandler.addServlet(new ServletHolder(new AddProductToCartServlet(productService)), applicationProperties.getProperty("servlet.userAddProductPath"));
-        servletContextHandler.addServlet(new ServletHolder(new DeleteProductFromCartServlet()), applicationProperties.getProperty("servlet.userDeleteProductPath"));
-        servletContextHandler.addServlet(new ServletHolder(new CartServlet()), applicationProperties.getProperty("servlet.userCartProductPath"));
-        servletContextHandler.addServlet(new ServletHolder(new ClearProductCartServlet()), applicationProperties.getProperty("servlet.userClearCartProductPath"));
+        servletContextHandler.addServlet(new ServletHolder(new AddProductToCartServlet(productService)), "/user/product/add");
+        servletContextHandler.addServlet(new ServletHolder(new DeleteProductFromCartServlet()), "/user/product/delete");
+        servletContextHandler.addServlet(new ServletHolder(new CartServlet()), "/user/cart");
+        servletContextHandler.addServlet(new ServletHolder(new ClearProductCartServlet()), "/user/clearCart");
 
 
-//        servletContextHandler.addServlet(new ServletHolder(new SearchServlet(productService)), "/search");
-//        servletContextHandler.addServlet(new ServletHolder(new ResourcesServlet()), "/resources/*");
-//        servletContextHandler.addServlet(new ServletHolder(new LoginServlet(securityService)), "/login");
-//        servletContextHandler.addServlet(new ServletHolder(new LogoutServlet()), "/logout");
-        servletContextHandler.addServlet(new ServletHolder(new SearchServlet(productService)),  applicationProperties.getProperty("servlet.search"));
-        servletContextHandler.addServlet(new ServletHolder(new ResourcesServlet()),  applicationProperties.getProperty("servlet.resources"));
-        servletContextHandler.addServlet(new ServletHolder(new LoginServlet(securityService)),  applicationProperties.getProperty("servlet.login"));
-        servletContextHandler.addServlet(new ServletHolder(new LogoutServlet()),  applicationProperties.getProperty("servlet.logout"));
-
+        servletContextHandler.addServlet(new ServletHolder(new SearchServlet(productService)), "/search");
+        servletContextHandler.addServlet(new ServletHolder(new ResourcesServlet()), "/resources/*");
+        servletContextHandler.addServlet(new ServletHolder(new LoginServlet(securityService)), "/login");
+        servletContextHandler.addServlet(new ServletHolder(new LogoutServlet(securityService)), "/logout");
 
 //        filter
-//        servletContextHandler.addFilter(new FilterHolder(logFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
-//        servletContextHandler.addFilter(new FilterHolder(authFilter), "/admin/*", EnumSet.of(DispatcherType.REQUEST));
-//        servletContextHandler.addFilter(new FilterHolder(authFilter), "/user/*", EnumSet.of(DispatcherType.REQUEST));
 
         Server server = new Server(8080);
         server.setHandler(servletContextHandler);

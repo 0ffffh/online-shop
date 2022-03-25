@@ -29,13 +29,18 @@ public class PasswordCrypt {
             "freedom to the galaxy....";
 
 
-    public static String encryptPassword(String password, String userSalt) throws NoSuchAlgorithmException {
+    public static String encryptPassword(String password, String userSalt) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(SALT.getBytes(StandardCharsets.UTF_8));
+            md.update(userSalt.getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
-        MessageDigest md = MessageDigest.getInstance("SHA-512");
-        md.update(SALT.getBytes(StandardCharsets.UTF_8));
-        md.update(userSalt.getBytes(StandardCharsets.UTF_8));
-        byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(bytes);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-        return HexFormat.of().formatHex(bytes);
     }
 }

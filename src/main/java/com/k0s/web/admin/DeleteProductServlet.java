@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-public class DeleteServlet extends HttpServlet {
+public class DeleteProductServlet extends HttpServlet {
     private final ProductService productService;
 
-    public DeleteServlet(ProductService productService) {
+    public DeleteProductServlet(ProductService productService) {
         this.productService = productService;
     }
     @Override
@@ -20,7 +20,7 @@ public class DeleteServlet extends HttpServlet {
             productService.remove(Integer.parseInt(req.getParameter("id")));
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }
         resp.sendRedirect("/");

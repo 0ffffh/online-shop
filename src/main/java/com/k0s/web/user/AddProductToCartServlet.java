@@ -17,13 +17,12 @@ public class AddProductToCartServlet extends HttpServlet {
     }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//TODO убрать тру
         try {
             Session session = (Session) req.getAttribute("session");
             session.addToCart(productService.get(Long.parseLong(req.getParameter("id"))));
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }
         resp.sendRedirect("/");

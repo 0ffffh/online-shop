@@ -19,7 +19,7 @@ public class DeleteProductFromCartServlet extends HttpServlet {
             session.getCart().remove(Integer.parseInt(req.getParameter("id")));
         } catch (Exception e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }
         resp.sendRedirect("/user/cart");

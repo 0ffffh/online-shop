@@ -14,8 +14,6 @@ public class Session {
     private LocalDateTime expireDate;
     private List<Product> cart = new ArrayList<>();
 
-    public Session() {
-    }
 
     public Session(String token, User user, LocalDateTime expireDate) {
         this.token = token;

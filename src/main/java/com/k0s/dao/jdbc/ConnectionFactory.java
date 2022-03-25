@@ -17,17 +17,16 @@ public class ConnectionFactory implements DataSource {
     }
 
     public Connection getConnection() {
-        Connection connection;
         try{
-            connection = DriverManager.getConnection(
+            return DriverManager.getConnection(
                 properties.getProperty("url"),
                 properties.getProperty("user"),
                 properties.getProperty("password"));
 
         } catch (SQLException e) {
-            throw new RuntimeException("Can't connect to database " + e);
+            e.printStackTrace();
+            throw new RuntimeException("Can't connect to database ");
         }
-        return connection;
     }
 
     @Override

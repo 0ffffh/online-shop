@@ -23,20 +23,10 @@ public class SearchServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try{
-            System.out.println(req.getParameter("search"));
             Map<String, Object> pageVariables = new HashMap<>();
-            pageVariables.put("isLogin", req.getAttribute("isLogin"));
 
             Session session = (Session) req.getAttribute("session");
-
-            if(session != null){
-                pageVariables.put("isLogin", true);
-                pageVariables.put("role", session.getUser().getRole());
-            } else{
-                pageVariables.put("isLogin", false);
-                pageVariables.put("role", Role.GUEST);
-            }
-
+            pageVariables.put("role", session == null ? Role.GUEST : session.getRole());
             pageVariables.put("products", productService.search(req.getParameter("search")));
 
             resp.setContentType("text/html;charset=utf-8");

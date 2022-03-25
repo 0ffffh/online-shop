@@ -15,7 +15,6 @@
 </a>
 <div class="container">
 
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">OnlineShop</a>
@@ -26,14 +25,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-<!--                    <li class="nav-item">-->
-<!--                        <a class="nav-link active" href="/admin/add">Add</a>-->
-<!--                    </li>-->
-                    <a class="nav-link active" href="/admin/add">
-                        <button class="btn btn-outline-success" type="submit">Add</button>
-                    </a>
                 </ul>
-
                 <form class="d-flex" action="/search" method="GET">
                     <input class="form-control me-2" name="search" type="search" placeholder="Search"
                            aria-label="Search">
@@ -43,10 +35,34 @@
         </div>
     </nav>
 
+    <div class="st_wrap_table" data-table_id="3">
+        <header class="st_table_header">
+            <h2>Add product</h2>
+            <div class="st_row">
+                <div class="st_column date">Name</div>
+                <div class="st_column date">Price</div>
+                <div class="st_column date">Description</div>
+            </div>
+        </header>
+        <div class="st_table">
+            <form action="/admin/product/add" method="POST">
+                <div class="st_row">
+
+                    <div class="st_column date"><input type="text" name="name"/></div>
+                    <div class="st_column date"><input type="text" name="price"/></div>
+                    <div class="st_column date"><textarea rows="3" cols="30" name="description"/>Description</textarea>
+                    </div>
+                    <div class="st_column price"><input type="submit" class="btn btn-success" value="Add"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <main class="st_viewport">
         <div class="st_wrap_table" data-table_id="0">
             <header class="st_table_header">
-                <h2>Product:</h2>
+                <h2>Products:</h2>
                 <div class="st_row">
                     <div class="st_column id">ID</div>
                     <div class="st_column name">Name</div>
@@ -58,45 +74,19 @@
                 </div>
             </header>
             <div class="st_table">
+                <#list products as product>
                 <div class="st_row">
-
-                    <div class="st_column id">${id}</div>
-                    <div class="st_column name">${name}</div>
-                    <div class="st_column price">${price?string("###,###,###.00")}</div>
-                    <div class="st_column date">${creation_date}</div>
-                    <div class="st_column description">${description}</div>
+                    <div class="st_column id">${product.id}</div>
+                    <div class="st_column name">${product.name}</div>
+                    <div class="st_column price">${product.price?string("###,###,###.00")}</div>
+                    <div class="st_column date">${product.creationDate}</div>
+                    <div class="st_column description">${product.description}</div>
                 </div>
-
-            </div>
+            </#list>
         </div>
-
     </main>
 
-    <div class="st_wrap_table" data-table_id="3">
-        <header class="st_table_header">
-            <h2>Edit product</h2>
-            <div class="st_row">
-                <div class="st_column date">Name</div>
-                <div class="st_column date">Price</div>
-                <div class="st_column date">Description</div>
-            </div>
-        </header>
-        <div class="st_table">
-            <form action="/admin/edit" method="POST">
-                <div class="st_row">
-
-                    <div class="st_column date"><input type="text" value=${name} name="name"/></div>
-                    <div class="st_column date"><input type="text" value=${price?string.computer} name="price"/></div>
-                    <div class="st_column date"><textarea rows="3" cols="30" name="description"/>${description}</textarea></div>
-                    <div class="st_column price">
-                        <button type="button" class="btn btn-success name=id value="${id}">Update</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
-
 
 </body>
 </html>
