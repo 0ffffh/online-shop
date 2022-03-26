@@ -78,9 +78,9 @@ public class JettyStart {
 //        filter
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
-        Server server = new Server(8080);
+//        Server server = new Server(8080);
 //        for heroku
-//        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
+        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
         server.setHandler(servletContextHandler);
 
         server.start();
