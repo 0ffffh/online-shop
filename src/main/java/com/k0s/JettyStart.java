@@ -26,6 +26,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.flywaydb.core.Flyway;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.*;
 
@@ -50,7 +51,7 @@ public class JettyStart {
 
         AuthFilter authFilter = new AuthFilter(securityService);
 
-        flywayMigration(propertiesReader.getProperties());
+        flywayMigration(propertiesReader.getProperties(), connectionFactory);
 
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
@@ -87,12 +88,13 @@ public class JettyStart {
 
     }
 
-    private static void flywayMigration(Properties dbProperties) throws IOException {
+    private static void flywayMigration(Properties dbProperties, DataSource dataSource) throws IOException {
 
         Flyway flyway = Flyway.configure()
-                .dataSource(dbProperties.getProperty("url"),
-                        dbProperties.getProperty("user"),
-                        dbProperties.getProperty("password"))
+                .dataSource(dataSource)
+//                .dataSource(dbProperties.getProperty("url"),
+//                        dbProperties.getProperty("user"),
+//                        dbProperties.getProperty("password"))
                 .locations("classpath:/db/migration")
                 .load();
         flyway.migrate();

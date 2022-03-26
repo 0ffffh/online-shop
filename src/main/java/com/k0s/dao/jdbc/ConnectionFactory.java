@@ -19,10 +19,12 @@ public class ConnectionFactory implements DataSource {
 
     public Connection getConnection() {
         try{
-            return DriverManager.getConnection(
-                properties.getProperty("url"),
-                properties.getProperty("user"),
-                properties.getProperty("password"));
+            return getHerokuConnection();
+
+//            return DriverManager.getConnection(
+//                properties.getProperty("url"),
+//                properties.getProperty("user"),
+//                properties.getProperty("password"));
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -38,7 +40,7 @@ public class ConnectionFactory implements DataSource {
         }
     }
 
-    private Connection getHerokuConnection() throws URISyntaxException, SQLException {
+    private Connection getHerokuConnection() throws  SQLException {
         String dbUrl = System.getenv("JDBC_DATABASE_URL");
         return DriverManager.getConnection(dbUrl);
     }
