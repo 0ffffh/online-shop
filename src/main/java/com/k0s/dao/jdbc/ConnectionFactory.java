@@ -2,6 +2,7 @@ package com.k0s.dao.jdbc;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -25,9 +26,23 @@ public class ConnectionFactory implements DataSource {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException("Can't connect to database ");
+            System.out.println("Can't connect to database " + properties.getProperty("url") + " try connect to heroku db...");
+            try {
+                return getHerokuConnection();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                throw new RuntimeException("Can't connect to database ");
+            }
+
+
         }
     }
+
+    private Connection getHerokuConnection() throws URISyntaxException, SQLException {
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        return DriverManager.getConnection(dbUrl);
+    }
+
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
