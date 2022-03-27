@@ -16,7 +16,6 @@ import java.util.List;
 
 public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
-    private static final String ROLE_ATT = "role";
     private static final String SESSION_ATT = "session";
     private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
 
@@ -54,12 +53,7 @@ public class AuthFilter implements Filter {
                 }
             }
         }
-
-        if (session == null) {
-            req.setAttribute(ROLE_ATT, Role.GUEST);
-        } else {
-            req.setAttribute(SESSION_ATT, session);
-        }
+        req.setAttribute(SESSION_ATT, session);
 
         for (Role role : Role.values()) {
             if (requestPath.contains(role.toString())) {
