@@ -73,10 +73,29 @@
             <#if role == "admin">
             <div class="st_column id">${product.id}</div>
         </#if>
-        <div class="st_column name">${product.name}</div>
-        <div class="st_column price">${product.price?string("###,###,###.00")}</div>
-        <div class="st_column date">${product.creationDate}</div>
-        <div class="st_column description">${product.description}</div>
+        <div class="st_column name">
+            <#if product.name??>
+            ${product.name}
+            </#if>
+        </div>
+        <div class="st_column price">
+            <#if product.price??>
+            ${product.price?string("###,###,###.00")}
+            </#if>
+        </div>
+
+        <div class="st_column date">
+            <#if product.creationDate??>
+                ${product.creationDate}
+            </#if>
+        </div>
+
+
+        <div class="st_column description">
+            <#if product.description??>
+                ${product.description}
+            </#if>
+        </div>
 
         <#if role == "admin">
         <div class="st_column edit">

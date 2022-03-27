@@ -35,4 +35,26 @@ class ProductRowMapperTest {
         assertEquals(resultSet.getTimestamp("creation_date").toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), product.getCreationDate());
 
     }
+
+    @Test
+    void mapRowNull() throws SQLException {
+        LocalDateTime now = LocalDateTime.now();
+        ResultSet resultSet = mock(ResultSet.class);
+
+        when(resultSet.getString("name")).thenReturn(null);
+        when(resultSet.getString("description")).thenReturn(null);
+        when(resultSet.getLong(any())).thenReturn((long)0);
+        when(resultSet.getDouble(any())).thenReturn((double)0);
+        when(resultSet.getTimestamp(any())).thenReturn(Timestamp.valueOf(now));
+
+        Product product = ProductRowMapper.mapRow(resultSet);
+        System.out.println(product);
+
+        assertEquals(resultSet.getString("name"), product.getName());
+        assertEquals(resultSet.getString("description"), product.getDescription());
+        assertEquals(resultSet.getLong("id"), product.getId());
+        assertEquals(resultSet.getDouble("price"), product.getPrice());
+        assertEquals(resultSet.getTimestamp("creation_date").toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), product.getCreationDate());
+
+    }
 }

@@ -21,8 +21,8 @@ public class ConnectionFactory implements DataSource {
 
     public Connection getConnection() {
         try{
-//            return getHerokuConnection();
-            return getLocalConnection();
+            return getHerokuConnection();
+//            return getLocalConnection();
 
         } catch (SQLException e) {
             e.printStackTrace();

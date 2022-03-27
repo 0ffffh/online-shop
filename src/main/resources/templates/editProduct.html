@@ -52,11 +52,30 @@
             <div class="st_table">
                 <div class="st_row">
 
-                    <div class="st_column id">${id}</div>
-                    <div class="st_column name">${name}</div>
-                    <div class="st_column price">${price?string("###,###,###.00")}</div>
-                    <div class="st_column date">${creation_date}</div>
-                    <div class="st_column description">${description}</div>
+                    <div class="st_column id">
+                        <#if id??>
+                        ${id}
+                        </#if>
+                    </div>
+                    <div class="st_column name">
+                        <#if name??>
+                        ${name}
+                        </#if>
+                    </div>
+                    <div class="st_column price">
+                        <#if price??>
+                        ${price?string("###,###,###.00")}
+                        </#if>
+                    </div>
+                    <div class="st_column date">
+                        <#if creation_date??>
+                        ${creation_date}
+                        </#if>
+                    </div>
+                    <div class="st_column description">
+                        <#if description??>
+                        ${description}</div>
+                        </#if>
                 </div>
 
             </div>
@@ -79,7 +98,11 @@
 
                     <div class="st_column date"><input type="text" value=${name} name="name"/></div>
                     <div class="st_column date"><input type="text" value=${price?string.computer} name="price"/></div>
-                    <div class="st_column date"><textarea rows="3" cols="30" name="description"/>${description}</textarea></div>
+                    <div class="st_column date"><textarea rows="3" cols="30" name="description"/>
+                        <#if description??>
+                        ${description}
+                        </#if>
+                    </textarea></div>
                     <div class="st_column price">
                         <button type="submit" class="btn btn-success" name="id" value=${id}>Update</button>
                     </div>
