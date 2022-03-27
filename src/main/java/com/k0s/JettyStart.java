@@ -51,7 +51,7 @@ public class JettyStart {
 
         AuthFilter authFilter = new AuthFilter(securityService);
 
-        flywayMigration(propertiesReader.getProperties(), connectionFactory);
+        flywayMigration(connectionFactory);
 
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
@@ -88,13 +88,10 @@ public class JettyStart {
 
     }
 
-    private static void flywayMigration(Properties dbProperties, DataSource dataSource) throws IOException {
+    private static void flywayMigration(DataSource dataSource) throws IOException {
 
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
-//                .dataSource(dbProperties.getProperty("url"),
-//                        dbProperties.getProperty("user"),
-//                        dbProperties.getProperty("password"))
                 .locations("classpath:/db/migration")
                 .load();
         flyway.migrate();

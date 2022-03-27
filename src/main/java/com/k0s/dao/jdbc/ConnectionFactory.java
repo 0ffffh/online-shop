@@ -2,7 +2,6 @@ package com.k0s.dao.jdbc;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -21,28 +20,39 @@ public class ConnectionFactory implements DataSource {
         try{
             return getHerokuConnection();
 
-//            return DriverManager.getConnection(
-//                properties.getProperty("url"),
-//                properties.getProperty("user"),
-//                properties.getProperty("password"));
-
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Can't connect to database " + properties.getProperty("url") + " try connect to heroku db...");
+            System.out.println("Can't connect to database " + properties.getProperty("url") + " try connect to local default database...");
             try {
-                return getHerokuConnection();
+                return getLocalConnection();
             } catch (Exception ex) {
                 ex.printStackTrace();
-                throw new RuntimeException("Can't connect to database ");
+                throw new RuntimeException("Can't connect to local database ");
             }
 
 
         }
     }
 
+    private Connection getLocalConnection() throws SQLException {
+        return DriverManager.getConnection(
+                properties.getProperty("local.url"),
+                properties.getProperty("local.user"),
+                properties.getProperty("local.password"));
+    }
+
     private Connection getHerokuConnection() throws  SQLException {
-        String dbUrl = System.getenv("JDBC_DATABASE_URL");
-        return DriverManager.getConnection(dbUrl);
+        try{
+            return DriverManager.getConnection(
+                    properties.getProperty("heroku.url"),
+                    properties.getProperty("heroku.user"),
+                    properties.getProperty("heroku.password"));
+        } catch (SQLException e){
+            e.printStackTrace();
+            String dbUrl = System.getenv("JDBC_DATABASE_URL");
+            return DriverManager.getConnection(dbUrl);
+        }
+
     }
 
 
