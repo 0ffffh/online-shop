@@ -7,11 +7,13 @@ import com.k0s.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class IndexServlet extends HttpServlet {
 
     private final ProductService productService;
@@ -35,8 +37,8 @@ public class IndexServlet extends HttpServlet {
             resp.getWriter().println(PageGenerator.getInstance().getPage("index.html", pageVariables));
 
         } catch (Exception e) {
-            e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            log.error(e.getMessage());
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

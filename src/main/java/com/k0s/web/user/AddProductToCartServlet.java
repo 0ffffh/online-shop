@@ -6,9 +6,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public class AddProductToCartServlet extends HttpServlet {
     private final ProductService productService;
 
@@ -21,7 +23,7 @@ public class AddProductToCartServlet extends HttpServlet {
             Session session = (Session) req.getAttribute("session");
             session.addToCart(productService.get(Long.parseLong(req.getParameter("id"))));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }

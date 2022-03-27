@@ -7,13 +7,14 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+@Slf4j
 public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
     private static final String SESSION_ATT = "session";
@@ -28,6 +29,7 @@ public class AuthFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        log.info("Authorization filter init");
         SKIP_AUTHORIZATION_PATH_LIST.addAll(Arrays.asList(securityService.getProperties().getProperty("security.skipPath").split(",")));
     }
 
@@ -60,6 +62,7 @@ public class AuthFilter implements Filter {
                 if (isAllow(session, role)) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {
+                    log.info("Not authorized {} try connect to {}", req.getRemoteAddr(), req.getRequestURL());
                     resp.sendError(HttpServletResponse.SC_FORBIDDEN);
                 }
                 return;

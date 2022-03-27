@@ -7,9 +7,10 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-
+@Slf4j
 public class LoginServlet extends HttpServlet {
     private final static String LOGIN_HTML_PAGE = "login.html";
     private final SecurityService securityService;
@@ -31,14 +32,15 @@ public class LoginServlet extends HttpServlet {
 
         String token = securityService.login(username, password);
         if (token != null) {
+            log.info("User <{}> authorized, token = {}", username, token);
             Cookie cookie = new Cookie("user-token", token);
             cookie.setMaxAge(Integer.parseInt(securityService.getProperties().getProperty("security.sessionTimeout")));
             resp.addCookie(cookie);
             resp.sendRedirect("/");
         } else {
+            log.info("User <{}> not authorized", username);
             doGet(req, resp);
         }
-
     }
 }
 

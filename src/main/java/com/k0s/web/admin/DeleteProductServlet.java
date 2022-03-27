@@ -5,9 +5,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+@Slf4j
 public class DeleteProductServlet extends HttpServlet {
     private final ProductService productService;
 
@@ -19,7 +21,7 @@ public class DeleteProductServlet extends HttpServlet {
         try {
             productService.remove(Integer.parseInt(req.getParameter("id")));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Delete product ",e);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }

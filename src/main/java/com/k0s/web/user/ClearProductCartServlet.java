@@ -5,9 +5,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-
+@Slf4j
 public class ClearProductCartServlet extends HttpServlet {
 
     @Override
@@ -17,7 +18,7 @@ public class ClearProductCartServlet extends HttpServlet {
             Session session = (Session) req.getAttribute("session");
             session.getCart().clear();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }

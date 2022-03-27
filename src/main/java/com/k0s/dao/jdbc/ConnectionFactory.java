@@ -1,5 +1,7 @@
 package com.k0s.dao.jdbc;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -9,6 +11,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+@Slf4j
 public class ConnectionFactory implements DataSource {
     private final Properties properties;
 
@@ -18,19 +21,19 @@ public class ConnectionFactory implements DataSource {
 
     public Connection getConnection() {
         try{
-            return getHerokuConnection();
+//            return getHerokuConnection();
+            return getLocalConnection();
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Can't connect to database " + properties.getProperty("url") + " try connect to local default database...");
+//            log.info("Can't connect to database " + properties.getProperty("url") + " try connect to local default database...");
+            log.error("Can't connect to database URL =  {} try connect to local default database.", properties.getProperty("local.url"));
             try {
                 return getLocalConnection();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                log.error("Can't connect to local database URL = {}, {}",properties.getProperty("local.url"), ex);
                 throw new RuntimeException("Can't connect to local database ");
             }
-
-
         }
     }
 
@@ -49,6 +52,7 @@ public class ConnectionFactory implements DataSource {
                     properties.getProperty("heroku.password"));
         } catch (SQLException e){
             e.printStackTrace();
+            log.error("Can't connect to database URL = {} from config file, try connect to environment database URL =  {}", properties.getProperty("heroku.url"), System.getenv("JDBC_DATABASE_URL"));
             String dbUrl = System.getenv("JDBC_DATABASE_URL");
             return DriverManager.getConnection(dbUrl);
         }

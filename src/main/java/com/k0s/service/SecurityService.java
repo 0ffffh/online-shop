@@ -3,15 +3,15 @@ package com.k0s.service;
 import com.k0s.entity.user.User;
 import com.k0s.security.PasswordCrypt;
 import com.k0s.security.Session;
+import lombok.extern.slf4j.Slf4j;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessionList = new ConcurrentHashMap<>();
@@ -31,6 +31,7 @@ public class SecurityService {
             sessionList.put(token, new Session(token, user, LocalDateTime.now().plusSeconds(Long.parseLong(applicationProperties.getProperty("security.sessionTimeout")))));
             return token;
         } catch (RuntimeException e) {
+            log.info("User <{}> login fail: ", name, e);
             return null;
         }
     }

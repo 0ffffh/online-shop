@@ -14,6 +14,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
 
+        <logback.version>1.2.10</logback.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <org.projectlombok.version>1.18.22</org.projectlombok.version>
         <org.postgresql.version>42.3.2</org.postgresql.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <org.mockito.version>4.4.0</org.mockito.version>
@@ -35,7 +38,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${org.flywaydb.version}</version>
                 <configuration>
-                    <url>${env.JDBC_DATABASE_URL}</url>
+<!--                    <url>${env.JDBC_DATABASE_URL}</url>-->
                     <configFiles>
                         <configFile>src/main/resources/db/flyway.conf</configFile>
                     </configFiles>
@@ -69,6 +72,33 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${org.projectlombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

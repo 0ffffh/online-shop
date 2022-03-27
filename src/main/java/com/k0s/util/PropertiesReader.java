@@ -1,11 +1,14 @@
 package com.k0s.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+@Slf4j
 public class PropertiesReader {
     private static final String DEFAULT_CONFIG_PATH = "application.properties";
     private String path;
@@ -26,11 +29,12 @@ public class PropertiesReader {
             properties.load(inputStream);
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
-            System.out.println("Can't read config file " + file.getAbsolutePath() + " try load default config " + DEFAULT_CONFIG_PATH);
+            log.info("Can't read config file {} try load default config {}", file.getAbsolutePath(), DEFAULT_CONFIG_PATH);
             try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_PATH)) {
                 properties.load(inputStream);
             } catch (IOException ex) {
                 ex.printStackTrace();
+                log.error("Cant load DB config", ex);
                 throw new RuntimeException("Cant load DB config");
             }
         }
@@ -42,7 +46,7 @@ public class PropertiesReader {
             properties.load(inputStream);
         } catch (IOException | NullPointerException e) {
             e.printStackTrace();
-            System.out.println("Can't read config file " + file.getAbsolutePath());
+            log.info("Can't read config file {}", file.getAbsolutePath());
         }
     }
 }

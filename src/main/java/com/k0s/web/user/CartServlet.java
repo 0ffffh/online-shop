@@ -5,11 +5,13 @@ import com.k0s.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class CartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -23,7 +25,7 @@ public class CartServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage("userCart.html", pageVariables));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info(e.getMessage());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 
         }

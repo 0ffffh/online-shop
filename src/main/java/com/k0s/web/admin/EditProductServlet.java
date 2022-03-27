@@ -7,12 +7,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class EditProductServlet extends HttpServlet {
 
     private final ProductService productService;
@@ -38,7 +40,7 @@ public class EditProductServlet extends HttpServlet {
             resp.getWriter().println(PageGenerator.getInstance().getPage("editProduct.html", pageVariables));
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("GET ", e);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
@@ -56,7 +58,7 @@ public class EditProductServlet extends HttpServlet {
                     LocalDateTime.now(),
                     req.getParameter("description")));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Product edit ",e);
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         doGet(req, resp);
