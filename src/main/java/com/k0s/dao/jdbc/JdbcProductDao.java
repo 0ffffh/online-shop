@@ -55,7 +55,6 @@ public class JdbcProductDao implements ProductDao<Product> {
                 return ProductRowMapper.mapRow(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Get product id={} error: {}", id, e);
             throw new RuntimeException("Get product error " + e.getMessage());
         }

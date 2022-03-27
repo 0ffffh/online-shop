@@ -21,28 +21,20 @@ public class ConnectionFactory implements DataSource {
 
     public Connection getConnection() {
         try{
-            return getHerokuConnection();
-//            return getLocalConnection();
-
+            return getLocalConnection();
         } catch (SQLException e) {
-            log.error("Can't connect to database URL =  {} try connect to local default database.", properties.getProperty("heroku.url"), e);
+            log.error("Can't connect to database URL =  {} try connect to local default database.", properties.getProperty("local.url"), e);
             try {
-                return getLocalConnection();
+                return getHerokuConnection();
             } catch (Exception ex) {
-                log.error("Can't connect to local database URL = {}, {}",properties.getProperty("local.url"), ex);
-                throw new RuntimeException("Can't connect to local database ");
+                log.error("Can't connect to local database URL = {}, {}",properties.getProperty("heroku.url"), ex);
+                throw new RuntimeException("Can't connect to heroku database ");
             }
         }
     }
 
-    private Connection getLocalConnection() throws SQLException {
-        return DriverManager.getConnection(
-                properties.getProperty("local.url"),
-                properties.getProperty("local.user"),
-                properties.getProperty("local.password"));
-    }
 
-    private Connection getHerokuConnection() throws  SQLException {
+    public Connection getHerokuConnection() throws  SQLException {
         try{
             return DriverManager.getConnection(
                     properties.getProperty("heroku.url"),
@@ -54,6 +46,13 @@ public class ConnectionFactory implements DataSource {
             return DriverManager.getConnection(dbUrl);
         }
 
+    }
+
+    private Connection getLocalConnection() throws SQLException {
+        return DriverManager.getConnection(
+                properties.getProperty("local.url"),
+                properties.getProperty("local.user"),
+                properties.getProperty("local.password"));
     }
 
 
