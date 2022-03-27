@@ -67,10 +67,6 @@ class EditProductServletTest {
         when(servletRequest.getParameter("description")).thenReturn("banana");
         when(servletResponse.getWriter()).thenReturn(mock(PrintWriter.class));
 
-
-
-        int size = productService.getAll().size();
-
         Product expected = productService.get(1);
 
         editProductServlet.doPost(servletRequest, servletResponse);
@@ -81,7 +77,6 @@ class EditProductServletTest {
         assertNotEquals(expected.getName(), actual.getName());
         assertNotEquals(expected.getDescription(), actual.getDescription());
         assertNotEquals(expected.getPrice(), actual.getPrice());
-        assertEquals(size, productService.getAll().size());
     }
 
 }
