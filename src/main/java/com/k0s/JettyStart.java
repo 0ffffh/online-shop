@@ -27,7 +27,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.flywaydb.core.Flyway;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.util.*;
 
 public class JettyStart {
@@ -51,7 +50,7 @@ public class JettyStart {
 
         AuthFilter authFilter = new AuthFilter(securityService);
 
-        flywayMigration(propertiesReader.getProperties(), connectionFactory);
+        flywayMigration(connectionFactory);
 
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
@@ -78,9 +77,9 @@ public class JettyStart {
 //        filter
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
-//        Server server = new Server(8080);
+        Server server = new Server(8080);
 //        for heroku
-        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
+//        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
         server.setHandler(servletContextHandler);
 
         server.start();
@@ -88,13 +87,10 @@ public class JettyStart {
 
     }
 
-    private static void flywayMigration(Properties dbProperties, DataSource dataSource) throws IOException {
+    private static void flywayMigration(DataSource dataSource) {
 
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
-//                .dataSource(dbProperties.getProperty("url"),
-//                        dbProperties.getProperty("user"),
-//                        dbProperties.getProperty("password"))
                 .locations("classpath:/db/migration")
                 .load();
         flyway.migrate();
