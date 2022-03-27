@@ -25,9 +25,7 @@ public class ConnectionFactory implements DataSource {
 //            return getLocalConnection();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-//            log.info("Can't connect to database " + properties.getProperty("url") + " try connect to local default database...");
-            log.error("Can't connect to database URL =  {} try connect to local default database.", properties.getProperty("local.url"));
+            log.error("Can't connect to database URL =  {} try connect to local default database.", properties.getProperty("heroku.url"), e);
             try {
                 return getLocalConnection();
             } catch (Exception ex) {
@@ -51,8 +49,7 @@ public class ConnectionFactory implements DataSource {
                     properties.getProperty("heroku.user"),
                     properties.getProperty("heroku.password"));
         } catch (SQLException e){
-            e.printStackTrace();
-            log.error("Can't connect to database URL = {} from config file, try connect to environment database URL =  {}", properties.getProperty("heroku.url"), System.getenv("JDBC_DATABASE_URL"));
+            log.error("Can't connect to database URL = {} from config file, try connect to environment database URL =  {}", properties.getProperty("heroku.url"), System.getenv("JDBC_DATABASE_URL"), e);
             String dbUrl = System.getenv("JDBC_DATABASE_URL");
             return DriverManager.getConnection(dbUrl);
         }

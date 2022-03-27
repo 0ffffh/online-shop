@@ -59,13 +59,10 @@ class AuthFilterTest {
         FilterConfig filterConfig = mock(FilterConfig.class);
         authFilter.init(filterConfig);
 
-        Flyway flyway = Flyway.configure()
-                .dataSource(properties.getProperty("url"),
-                        properties.getProperty("user"),
-                        properties.getProperty("password"))
-                .locations("classpath:/db/migration")
-                .load();
-        flyway.migrate();
+         Flyway flyway = Flyway.configure()
+                 .dataSource(connectionFactory)
+                 .load();
+         flyway.migrate();
 
     }
 

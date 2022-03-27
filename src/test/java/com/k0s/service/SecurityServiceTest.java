@@ -42,10 +42,7 @@ class SecurityServiceTest {
         assertNotNull(connection);
 
         Flyway flyway = Flyway.configure()
-                .dataSource(properties.getProperty("url"),
-                        properties.getProperty("user"),
-                        properties.getProperty("password"))
-                .locations("classpath:/db/migration")
+                .dataSource(connectionFactory)
                 .load();
         flyway.migrate();
 
