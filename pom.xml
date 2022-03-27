@@ -35,6 +35,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${org.flywaydb.version}</version>
                 <configuration>
+                    <url>${env.JDBC_DATABASE_URL}</url>
                     <configFiles>
                         <configFile>src/main/resources/db/flyway.conf</configFile>
                     </configFiles>

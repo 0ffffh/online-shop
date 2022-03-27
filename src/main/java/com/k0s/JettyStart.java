@@ -77,9 +77,9 @@ public class JettyStart {
 //        filter
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
-        Server server = new Server(8080);
+//        Server server = new Server(8080);
 //        for heroku
-//        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
+        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
         server.setHandler(servletContextHandler);
 
         server.start();
@@ -87,8 +87,8 @@ public class JettyStart {
 
     }
 
-    private static void flywayMigration(DataSource dataSource) {
 
+    private static void flywayMigration(DataSource dataSource) {
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:/db/migration")
