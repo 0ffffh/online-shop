@@ -35,7 +35,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             }
             return productList;
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Get product list error: ",e);
             throw new RuntimeException("Get product list error  " + e.getMessage());
         }
@@ -75,7 +74,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Add product error: ", e);
             throw new RuntimeException("Add product error " + e.getMessage());
         }
@@ -89,7 +87,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Remove product id = {}, error: {}", id, e);
             throw new RuntimeException("Remove product id = " + id + " error " + e.getMessage());
         }
@@ -112,7 +109,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Update product error: ", e);
             throw new RuntimeException("Update product error " + e.getMessage());
         }
@@ -132,7 +128,6 @@ public class JdbcProductDao implements ProductDao<Product> {
                 return productList;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             log.error("Search product {} error {}", value, e);
             throw new RuntimeException("Search products error " + e);
         }

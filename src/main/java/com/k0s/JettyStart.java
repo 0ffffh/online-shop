@@ -77,9 +77,13 @@ public class JettyStart {
 //        filter
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
-        Server server = new Server(8080);
+
+
+//        Server server = new Server(8080);
 //        for heroku
 //        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
+        Server server = new Server(getPort(propertiesReader.getProperties()));
+
         server.setHandler(servletContextHandler);
 
         server.start();
@@ -94,5 +98,14 @@ public class JettyStart {
                 .locations("classpath:/db/migration")
                 .load();
         flyway.migrate();
+    }
+
+    private static int getPort(Properties properties){
+        String port = System.getenv("PORT");
+        if (port == null){
+            port = properties.getProperty("server.port");
+            return Integer.parseInt(port);
+        }
+        return Integer.parseInt(port);
     }
 }

@@ -1,5 +1,6 @@
 package com.k0s.dao.jdbc;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -19,33 +20,19 @@ public class ConnectionFactory implements DataSource {
         this.properties = properties;
     }
 
+    @SneakyThrows
     public Connection getConnection() {
-        try{
-            return getLocalConnection();
-        } catch (SQLException e) {
-            log.error("Can't connect to database URL =  {} try connect to local default database.", properties.getProperty("local.url"), e);
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
+        if (dbUrl == null){
+            log.info("Connecting to local database URL = {}", properties.getProperty("local.url"));
             try {
-                return getHerokuConnection();
-            } catch (Exception ex) {
-                log.error("Can't connect to local database URL = {}, {}",properties.getProperty("heroku.url"), ex);
-                throw new RuntimeException("Can't connect to heroku database ");
+                return getLocalConnection();
+            } catch (SQLException e){
+                log.error("Connection to local database URL = {}, fail :  {}",properties.getProperty("local.url"), e.getMessage());
+                throw new RuntimeException(e);
             }
         }
-    }
-
-
-    public Connection getHerokuConnection() throws  SQLException {
-        try{
-            return DriverManager.getConnection(
-                    properties.getProperty("heroku.url"),
-                    properties.getProperty("heroku.user"),
-                    properties.getProperty("heroku.password"));
-        } catch (SQLException e){
-            log.error("Can't connect to database URL = {} from config file, try connect to environment database URL =  {}", properties.getProperty("heroku.url"), System.getenv("JDBC_DATABASE_URL"), e);
-            String dbUrl = System.getenv("JDBC_DATABASE_URL");
-            return DriverManager.getConnection(dbUrl);
-        }
-
+        return DriverManager.getConnection(dbUrl);
     }
 
     private Connection getLocalConnection() throws SQLException {

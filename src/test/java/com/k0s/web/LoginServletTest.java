@@ -53,10 +53,10 @@ class LoginServletTest {
         Connection connection = connectionFactory.getConnection();
         assertNotNull(connection);
 
-        Flyway flyway = Flyway.configure()
-                .dataSource(connectionFactory)
-                .load();
-        flyway.migrate();
+//        Flyway flyway = Flyway.configure()
+//                .dataSource(connectionFactory)
+//                .load();
+//        flyway.migrate();
 
     }
 

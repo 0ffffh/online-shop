@@ -28,7 +28,7 @@ class ConnectionFactoryTest {
         Connection connection = connectionFactory.getConnection();
 
         driverManager.verify(() -> DriverManager.getConnection(anyString(), anyString(), anyString()));
-        verify(properties, times(3)).getProperty(anyString());
+        verify(properties, times(4)).getProperty(anyString());
         assertNotNull(connection);
 
     }
@@ -43,4 +43,5 @@ class ConnectionFactoryTest {
         assertNotNull(connection);
 
     }
+
 }
