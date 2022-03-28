@@ -20,6 +20,7 @@ import com.k0s.web.user.CartServlet;
 import com.k0s.web.user.ClearProductCartServlet;
 import com.k0s.web.user.DeleteProductFromCartServlet;
 import jakarta.servlet.DispatcherType;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -29,6 +30,7 @@ import org.flywaydb.core.Flyway;
 import javax.sql.DataSource;
 import java.util.*;
 
+@Slf4j
 public class JettyStart {
     private static final String DEFAULT_APP_PROPERTIES = "application.properties";
 
@@ -78,10 +80,6 @@ public class JettyStart {
         servletContextHandler.addFilter(new FilterHolder(authFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
 
-
-//        Server server = new Server(8080);
-//        for heroku
-//        Server server = new Server(Integer.parseInt(System.getenv("PORT")));
         Server server = new Server(getPort(propertiesReader.getProperties()));
 
         server.setHandler(servletContextHandler);
@@ -104,8 +102,10 @@ public class JettyStart {
         String port = System.getenv("PORT");
         if (port == null){
             port = properties.getProperty("server.port");
+            log.info("Using server PORT = {}", port);
             return Integer.parseInt(port);
         }
+        log.info("Using server PORT = {}", port);
         return Integer.parseInt(port);
     }
 }
