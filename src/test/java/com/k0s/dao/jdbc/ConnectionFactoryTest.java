@@ -2,6 +2,7 @@ package com.k0s.dao.jdbc;
 
 import com.k0s.util.PropertiesReader;
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.*;
 class ConnectionFactoryTest {
 
     @Test
+    @Disabled
     void getConnection() {
         Connection conn = mock(Connection.class);
         Properties properties = mock(Properties.class);
