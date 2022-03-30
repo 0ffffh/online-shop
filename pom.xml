@@ -38,13 +38,12 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${org.flywaydb.version}</version>
                 <configuration>
-<!--                    <url>${env.JDBC_DATABASE_URL}</url>-->
                     <configFiles>
-                        <configFile>src/main/resources/db/flyway.conf</configFile>
+                        <configFile>flyway.conf</configFile>
                     </configFiles>
-<!--                                        <locations>-->
-<!--                                            <location>classpath:db/migration</location>-->
-<!--                                        </locations>-->
+                    <locations>
+                        <location>classpath:db/migration</location>
+                    </locations>
                 </configuration>
             </plugin>
             <plugin>
