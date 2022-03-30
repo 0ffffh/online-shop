@@ -42,9 +42,9 @@
                     <configFiles>
                         <configFile>src/main/resources/db/flyway.conf</configFile>
                     </configFiles>
-                    <!--                    <locations>-->
-                    <!--                        <location>classpath:db/migration</location>-->
-                    <!--                    </locations>-->
+<!--                                        <locations>-->
+<!--                                            <location>classpath:db/migration</location>-->
+<!--                                        </locations>-->
                 </configuration>
             </plugin>
             <plugin>
