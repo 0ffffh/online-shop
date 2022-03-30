@@ -21,7 +21,7 @@ public class AddProductToCartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Session session = (Session) req.getAttribute("session");
-            session.addToCart(productService.get(Long.parseLong(req.getParameter("id"))));
+            session.getCart().add(productService.get(Long.parseLong(req.getParameter("id"))));
         } catch (Exception e) {
             log.info(e.getMessage());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);

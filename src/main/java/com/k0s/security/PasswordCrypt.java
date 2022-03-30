@@ -1,5 +1,8 @@
 package com.k0s.security;
 
+import lombok.NonNull;
+import lombok.SneakyThrows;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,18 +32,14 @@ public class PasswordCrypt {
             "freedom to the galaxy....";
 
 
-    public static String encryptPassword(String password, String userSalt) {
-        try {
+    @SneakyThrows
+    public static String encryptPassword(@NonNull String password, @NonNull String userSalt) {
+
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(SALT.getBytes(StandardCharsets.UTF_8));
             md.update(userSalt.getBytes(StandardCharsets.UTF_8));
             byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
             return HexFormat.of().formatHex(bytes);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-
     }
 }

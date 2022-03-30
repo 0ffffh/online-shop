@@ -11,42 +11,30 @@ import java.util.Properties;
 @Slf4j
 public class PropertiesReader {
     private static final String DEFAULT_CONFIG_PATH = "application.properties";
-    private String path;
     private final Properties properties = new Properties();
 
-    public PropertiesReader(){}
     public PropertiesReader(String path) {
-        this.path = path;
+        readProperties(path);
     }
 
     public Properties getProperties() {
         return this.properties;
     }
 
-    public void readProperties() {
-        File file = new File(this.path);
-        try (InputStream inputStream = new FileInputStream(file.getAbsolutePath())) {
-            properties.load(inputStream);
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-            log.info("Can't read config file {} try load default config {}", file.getAbsolutePath(), DEFAULT_CONFIG_PATH);
-            try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_PATH)) {
-                properties.load(inputStream);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                log.error("Cant load DB config", ex);
-                throw new RuntimeException("Cant load DB config");
-            }
-        }
-    }
 
-    public void readProperties(String path) {
+    private void readProperties(String path) {
         File file = new File(path);
         try (InputStream inputStream = new FileInputStream(file.getAbsolutePath())) {
             properties.load(inputStream);
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-            log.info("Can't read config file {}", file.getAbsolutePath());
+        } catch (IOException e) {
+            log.error("Can't read config file {}", file.getAbsolutePath(), e);
+            log.info("Try load default config");
+            try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_PATH)) {
+                properties.load(inputStream);
+            } catch (IOException ex) {
+                log.error("Load config failed");
+                throw new RuntimeException(ex);
+            }
         }
     }
 }

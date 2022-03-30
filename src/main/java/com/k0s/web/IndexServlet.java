@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 public class IndexServlet extends HttpServlet {
-
+    private static final String HTML_PAGE = "index.html";
     private final ProductService productService;
 
     public IndexServlet(ProductService productService){
@@ -29,15 +29,15 @@ public class IndexServlet extends HttpServlet {
 
             Session session = (Session) req.getAttribute("session");
 
-            pageVariables.put("role", session == null ? Role.GUEST : session.getRole());
+            pageVariables.put("role", session == null ? Role.GUEST : session.getUser().getRole());
             pageVariables.put("products", productService.getAll());
 
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(PageGenerator.getInstance().getPage("index.html", pageVariables));
+            resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Crash index page", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

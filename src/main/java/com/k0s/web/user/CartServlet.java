@@ -13,6 +13,8 @@ import java.util.Map;
 
 @Slf4j
 public class CartServlet extends HttpServlet {
+    private static final String HTML_PAGE = "userCart.html";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
@@ -20,10 +22,9 @@ public class CartServlet extends HttpServlet {
             Session session = (Session) req.getAttribute("session");
 
             pageVariables.put("products", session.getCart());
-
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(PageGenerator.getInstance().getPage("userCart.html", pageVariables));
+            resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
         } catch (Exception e) {
             log.info(e.getMessage());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);

@@ -2,8 +2,7 @@ package com.k0s.entity.user;
 
 import lombok.*;
 
-
-@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @ToString

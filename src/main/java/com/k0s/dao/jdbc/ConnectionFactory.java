@@ -2,6 +2,7 @@ package com.k0s.dao.jdbc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,43 +17,49 @@ import java.util.logging.Logger;
 
 @Slf4j
 public class ConnectionFactory implements DataSource {
-    private final HikariConfig config = new HikariConfig();
-    private final HikariDataSource ds;
-    private final Properties properties;
+    private static final String DATABASE_FLAG = "local";
+    private final HikariDataSource dataSource;
 
-    @SneakyThrows
-    public ConnectionFactory(Properties properties){
-        this.properties = properties;
-        setConnectionConfig(System.getenv("DATABASE_URL"));
-        ds = new HikariDataSource(config);
+    public ConnectionFactory(Properties properties) {
+        dataSource = new HikariDataSource(getConfig(properties));
     }
 
     @Override
-    public Connection getConnection(){
-        try {
-            return ds.getConnection();
-        } catch (SQLException e) {
-            log.info("Connection error", e.getMessage());
-            throw new RuntimeException(e);
-        }
+    @SneakyThrows
+    public Connection getConnection() {
+        return dataSource.getConnection();
     }
 
     @SneakyThrows
-    private void setConnectionConfig(String env){
-        if(env == null){
-            config.setJdbcUrl(properties.getProperty("local.url"));
-            config.setUsername(properties.getProperty("local.user") );
-            config.setPassword(properties.getProperty("local.password"));
-        } else {
-            URI dbUri = new URI(env);
-            String username = dbUri.getUserInfo().split(":")[0];
-            String password = dbUri.getUserInfo().split(":")[1];
-            String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-            config.setJdbcUrl( dbUrl );
-            config.setUsername( username );
-            config.setPassword( password );
+    private @NonNull HikariConfig getConfig(@NonNull Properties properties) {
+        if (properties.getProperty(DATABASE_FLAG) != null) {
+            log.info("Connecting to local database: {}", properties.getProperty("local.url"));
+            return setConfig(properties.getProperty("local.url"),
+                    properties.getProperty("local.user"),
+                    properties.getProperty("local.password"));
         }
+
+        String env = System.getenv("DATABASE_URL");
+        if (env == null) {
+            throw new RuntimeException("System variable $DATABASE_URL not set. Set $DATABASE_URL or use local database (set <local> flag in application properties).");
+        }
+        log.info("Connecting to {}", env);
+        URI dbUri = new URI(env);
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+        return setConfig(dbUrl, username, password);
     }
+
+
+    private @NonNull HikariConfig setConfig(String dbUrl, String username, String password) {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(dbUrl);
+        config.setUsername(username);
+        config.setPassword(password);
+        return config;
+    }
+
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {

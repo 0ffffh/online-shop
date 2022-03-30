@@ -1,8 +1,10 @@
 package com.k0s.web;
 
-import com.k0s.dao.UserDao;
+import com.k0s.dao.Dao;
+
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcUserDao;
+import com.k0s.entity.user.User;
 import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
@@ -26,13 +28,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.never;
 
 class LoginServletTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    UserDao userDao;
+    Dao<User> userDao;
     UserService userService;
 
     SecurityService securityService;
@@ -43,7 +44,6 @@ class LoginServletTest {
     void setUp() throws ServletException {
 
         propertiesReader = new PropertiesReader("test-db.properties");
-        propertiesReader.readProperties();
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
         userDao = new JdbcUserDao(connectionFactory);

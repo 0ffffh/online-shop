@@ -86,7 +86,7 @@
 
         <div class="st_column date">
             <#if product.creationDate??>
-                ${product.creationDate}
+                ${product.creationDate?datetime.iso}
             </#if>
         </div>
 

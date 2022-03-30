@@ -1,6 +1,6 @@
 package com.k0s.web.admin;
 
-import com.k0s.dao.ProductDao;
+import com.k0s.dao.Dao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.entity.Product;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
+
 import java.util.List;
 import java.util.Properties;
 
@@ -29,7 +29,7 @@ class AddProductServletTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    ProductDao<Product> jdbcProductDao;
+    Dao<Product> jdbcProductDao;
     ProductService productService;
     AddProductServlet addProductServlet;
     HttpServletRequest servletRequest;
@@ -37,10 +37,10 @@ class AddProductServletTest {
 
 
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() {
 
         propertiesReader = new PropertiesReader("test-db.properties");
-        propertiesReader.readProperties();
+
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
         jdbcProductDao = new JdbcProductDao(connectionFactory);
@@ -58,7 +58,6 @@ class AddProductServletTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Add product")
     void testAddServlet() throws IOException {
 

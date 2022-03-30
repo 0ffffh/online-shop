@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 public class AddProductServlet extends HttpServlet {
-
+    private static final String HTML_PAGE = "addProduct.html";
     private final ProductService productService;
 
     public AddProductServlet(ProductService productService) {
@@ -32,9 +32,9 @@ public class AddProductServlet extends HttpServlet {
 
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("text/html;charset=utf-8");
-            resp.getWriter().println(PageGenerator.getInstance().getPage("addProduct.html", pageVariables));
+            resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
         } catch (Exception e) {
-            log.error("Print add product page ", e);
+            log.error("Add product page servlet error: ", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -45,12 +45,14 @@ public class AddProductServlet extends HttpServlet {
             doGet(req, resp);
         } else {
             try {
-                productService.add(new Product(req.getParameter("name"),
-                        Double.parseDouble(req.getParameter("price")),
-                        req.getParameter("description"),
-                        LocalDateTime.now()));
+                productService.add(Product.builder()
+                        .name(req.getParameter("name"))
+                        .price(Double.parseDouble(req.getParameter("price")))
+                        .creationDate(LocalDateTime.now())
+                        .description(req.getParameter("description"))
+                        .build());
             } catch (Exception e) {
-                log.error("Product service ",e);
+                log.error("Add product error ",e);
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
             doGet(req, resp);
@@ -60,7 +62,7 @@ public class AddProductServlet extends HttpServlet {
     private boolean isValidRequest(HttpServletRequest req) {
         String name = req.getParameter("name");
         String price = req.getParameter("price");
-        return name != null && name.matches("^[a-z0-9_-]{3,25}$") &&
+        return name != null &&
                 price != null && price.length() > 0 &&
                 price.matches("[+]?\\d*\\.?\\d+");
     }

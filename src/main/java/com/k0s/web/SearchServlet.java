@@ -8,11 +8,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
+@Slf4j
 public class SearchServlet extends HttpServlet {
 
     private final ProductService productService;
@@ -26,7 +27,7 @@ public class SearchServlet extends HttpServlet {
             Map<String, Object> pageVariables = new HashMap<>();
 
             Session session = (Session) req.getAttribute("session");
-            pageVariables.put("role", session == null ? Role.GUEST : session.getRole());
+            pageVariables.put("role", session == null ? Role.GUEST : session.getUser().getRole());
             pageVariables.put("products", productService.search(req.getParameter("search")));
 
             resp.setContentType("text/html;charset=utf-8");
@@ -44,7 +45,7 @@ public class SearchServlet extends HttpServlet {
         try{
             productService.remove(Long.parseLong(req.getParameter("id")));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Search crashed: ", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
         doGet(req, resp);

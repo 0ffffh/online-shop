@@ -32,7 +32,7 @@ class ProductRowMapperTest {
         assertEquals(resultSet.getString("description"), product.getDescription());
         assertEquals(resultSet.getLong("id"), product.getId());
         assertEquals(resultSet.getDouble("price"), product.getPrice());
-        assertEquals(resultSet.getTimestamp("creation_date").toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), product.getCreationDate());
+        assertEquals(resultSet.getTimestamp("creation_date").toLocalDateTime(), product.getCreationDate());
 
     }
 
@@ -54,7 +54,7 @@ class ProductRowMapperTest {
         assertEquals(resultSet.getString("description"), product.getDescription());
         assertEquals(resultSet.getLong("id"), product.getId());
         assertEquals(resultSet.getDouble("price"), product.getPrice());
-        assertEquals(resultSet.getTimestamp("creation_date").toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), product.getCreationDate());
+        assertEquals(resultSet.getTimestamp("creation_date").toLocalDateTime(), product.getCreationDate());
 
     }
 }

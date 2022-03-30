@@ -1,6 +1,6 @@
 package com.k0s.dao.jdbc;
 
-import com.k0s.dao.ProductDao;
+import com.k0s.dao.Dao;
 import com.k0s.entity.Product;
 import com.k0s.util.PropertiesReader;
 import org.flywaydb.core.Flyway;
@@ -30,14 +30,14 @@ class JdbcProductDaoTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    ProductDao<Product> jdbcProductDao;
+    Dao<Product> jdbcProductDao;
 
 
     @BeforeEach
     void setUp() throws SQLException {
 
         propertiesReader = new PropertiesReader("test-db.properties");
-        propertiesReader.readProperties();
+
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
         jdbcProductDao = new JdbcProductDao(connectionFactory);
@@ -67,7 +67,7 @@ class JdbcProductDaoTest {
     @Test
     @DisplayName("JdbcProductDao getAll() mocked test")
     void getAll() throws SQLException {
-        ProductDao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
 
         List<Product> productList = jdbcProductDao.getAll();
 
@@ -90,7 +90,7 @@ class JdbcProductDaoTest {
     @DisplayName("JdbcProductDao get() mocked test")
     void get() throws SQLException {
 
-        ProductDao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
 
         Product product = jdbcProductDao.get(1);
         assertNotNull(product);
@@ -125,7 +125,7 @@ class JdbcProductDaoTest {
     @DisplayName("JdbcProductDao remove() mocked test")
     void remove() throws SQLException {
 
-        ProductDao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
         jdbcProductDao.remove(1);
 
         verify(mockPreparedStatement, times(1)).setLong(1, 1);
@@ -150,8 +150,14 @@ class JdbcProductDaoTest {
     @DisplayName("JdbcProductDao update() mocked test")
     void update() throws SQLException {
 
-        Product product = new Product(1, "product", 111.1, now, "description");
-        ProductDao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+//        Product product = new Product(1, "product", 111.1, now, "description");
+        Product product = Product.builder()
+                .name("product")
+                .price(111.11)
+                .description("new product")
+                .creationDate(LocalDateTime.now())
+                .build();
+        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
 
         jdbcProductDao.update(product);
 
@@ -200,7 +206,13 @@ class JdbcProductDaoTest {
     @DisplayName("JdbcProductDao add()  test")
     void add() throws SQLException {
 
-        Product product = new Product("product", 111.11, "new product", LocalDateTime.now());
+        Product product = Product.builder()
+                .name("product")
+                .price(111.11)
+                .description("new product")
+                .creationDate(LocalDateTime.now())
+                .build();
+//                new Product("product", 111.11, "new product", LocalDateTime.now());
 
         int oldSize = jdbcProductDao.getAll().size();
 

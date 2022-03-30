@@ -49,7 +49,7 @@
     <div class="st_wrap_table" data-table_id="0">
         <header class="st_table_header">
             <h2>Products</h2>
-            <a class="nav-link active" href="/user/clearCart">
+            <a class="nav-link active" href="/user/cart/clear">
                 <button class="btn btn-outline-danger" type="submit">Clear cart</button>
             </a>
             <div class="st_row">
@@ -66,7 +66,7 @@
 
                 <div class="st_column name"><#if product.name??>${product.name}</#if></div>
                 <div class="st_column price"><#if product.price??>${product.price?string("###,###,###.00")}</#if></div>
-                <div class="st_column date"><#if product.creationDate??>${product.creationDate}</#if></div>
+                <div class="st_column date"><#if product.creationDate??>${product.creationDate?datetime.iso}</#if></div>
                 <div class="st_column description"><#if product.description??>${product.description}</#if></div>
 
 

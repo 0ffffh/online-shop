@@ -6,6 +6,7 @@ import com.k0s.security.Session;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -16,11 +17,11 @@ public class SecurityService {
     private final UserService userService;
     private final Map<String, Session> sessionList = new ConcurrentHashMap<>();
 
-    private final Properties applicationProperties;
+    private final Properties properties;
 
-    public SecurityService(UserService userService, Properties applicationProperties) {
+    public SecurityService(UserService userService, Properties properties) {
         this.userService = userService;
-        this.applicationProperties = applicationProperties;
+        this.properties = properties;
     }
 
 
@@ -28,10 +29,15 @@ public class SecurityService {
         try {
             User user = userService.getUser(name);
             String token = getToken(user.getPassword(), password, user.getSalt());
-            sessionList.put(token, new Session(token, user, LocalDateTime.now().plusSeconds(Long.parseLong(applicationProperties.getProperty("security.sessionTimeout")))));
+            sessionList.put(token, Session.builder()
+                    .token(token)
+                    .user(user)
+                    .expireDate(LocalDateTime.now().plusSeconds(Long.parseLong(properties.getProperty("security.sessionTimeout"))))
+                    .cart(new ArrayList<>())
+                    .build());
             return token;
         } catch (RuntimeException e) {
-            log.info("User <{}> login fail: ", name, e);
+            log.info("User <{}> login fail: {}", name, e.getMessage());
             return null;
         }
     }
@@ -49,7 +55,7 @@ public class SecurityService {
     }
 
     public Properties getProperties() {
-        return applicationProperties;
+        return properties;
     }
 
 

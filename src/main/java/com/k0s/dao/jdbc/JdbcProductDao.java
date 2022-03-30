@@ -1,7 +1,8 @@
 package com.k0s.dao.jdbc;
 
-import com.k0s.dao.ProductDao;
+import com.k0s.dao.Dao;
 import com.k0s.entity.Product;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -10,9 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class JdbcProductDao implements ProductDao<Product> {
+public class JdbcProductDao implements Dao<Product> {
     private static final String GET_ALL_QUERY = "SELECT * FROM products";
-    private static final String GET_PRODUCT_QUERY = "SELECT * FROM products WHERE id = ?";
+    private static final String GET_PRODUCT_BY_ID_QUERY = "SELECT * FROM products WHERE id = ?";
+    private static final String GET_PRODUCT_BY_NAME_QUERY = "SELECT * FROM products WHERE name = ?";
     private static final String ADD_PRODUCT_QUERY = "INSERT INTO products (name, price, creation_date, description) values (?, ?, ?, ?);";
     private static final String REMOVE_PRODUCT_QUERY = "DELETE FROM products WHERE id = ?;";
     private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name = ?, price = ?, creation_date = ?, description = ?  WHERE id = ?;";
@@ -35,7 +37,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             }
             return productList;
         } catch (SQLException e) {
-            log.error("Get product list error: ",e);
             throw new RuntimeException("Get product list error  " + e.getMessage());
         }
     }
@@ -43,28 +44,37 @@ public class JdbcProductDao implements ProductDao<Product> {
     @Override
     public Product get(long id) {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_QUERY)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_BY_ID_QUERY)) {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (!resultSet.next()) {
-                    log.info("Product id={} not found", id);
                     throw new RuntimeException("Product id = " + id + " not found");
                 }
                 return ProductRowMapper.mapRow(resultSet);
             }
         } catch (SQLException e) {
-            log.error("Get product id={} error: {}", id, e);
             throw new RuntimeException("Get product error " + e.getMessage());
         }
     }
 
     @Override
-    public void add(Product product) {
-        if(product == null){
-            log.info("Add error, product can't be NULL");
-            throw new NullPointerException("Add error, product can't be NULL");
+    public Product get(String name) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_BY_NAME_QUERY)) {
+            preparedStatement.setString(1, name);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
+                    throw new RuntimeException("Product " + name + " not found");
+                }
+                return ProductRowMapper.mapRow(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Get product error " + e.getMessage());
         }
+    }
+
+    @Override
+    public void add(@NonNull Product product) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(ADD_PRODUCT_QUERY)) {
             preparedStatement.setString(1, product.getName());
@@ -74,7 +84,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            log.error("Add product error: ", e);
             throw new RuntimeException("Add product error " + e.getMessage());
         }
     }
@@ -87,18 +96,12 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            log.error("Remove product id = {}, error: {}", id, e);
             throw new RuntimeException("Remove product id = " + id + " error " + e.getMessage());
         }
     }
 
     @Override
-    public void update(Product product) {
-        if(product == null){
-            log.info("Update error, product can't be NULL");
-            throw new NullPointerException("Update error, product can't be NULL");
-        }
-
+    public void update(@NonNull Product product) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PRODUCT_QUERY)) {
             preparedStatement.setString(1, product.getName());
@@ -109,7 +112,6 @@ public class JdbcProductDao implements ProductDao<Product> {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            log.error("Update product error: ", e);
             throw new RuntimeException("Update product error " + e.getMessage());
         }
     }
@@ -128,7 +130,6 @@ public class JdbcProductDao implements ProductDao<Product> {
                 return productList;
             }
         } catch (SQLException e) {
-            log.error("Search product {} error {}", value, e);
             throw new RuntimeException("Search products error " + e);
         }
     }

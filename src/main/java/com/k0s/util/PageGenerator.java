@@ -1,5 +1,6 @@
 package com.k0s.util;
 
+import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -20,7 +21,7 @@ public class PageGenerator {
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateUpdateDelayMilliseconds(0);
         configuration.clearTemplateCache();
-        configuration.setClassLoaderForTemplateLoading(PageGenerator.class.getClassLoader(), TEMPLATES_DIR);
+//        configuration.setClassLoaderForTemplateLoading(PageGenerator.class.getClassLoader(), TEMPLATES_DIR);
     }
 
     public static PageGenerator getInstance(){
@@ -32,8 +33,8 @@ public class PageGenerator {
         Writer stream = new StringWriter();
 
         try {
-            Template template = configuration.getTemplate(filename);
-//            Template template = configuration.getTemplate(HTML_DIR + File.separator + filename);
+//            Template template = configuration.getTemplate(filename);
+            Template template = configuration.getTemplate(HTML_DIR + File.separator + filename);
             template.process(data, stream);
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);

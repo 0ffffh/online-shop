@@ -1,9 +1,10 @@
 package com.k0s.web.filter;
 
-import com.k0s.dao.UserDao;
+import com.k0s.dao.Dao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcUserDao;
 import com.k0s.entity.user.Role;
+import com.k0s.entity.user.User;
 import com.k0s.security.Session;
 import com.k0s.service.SecurityService;
 import com.k0s.service.UserService;
@@ -35,7 +36,7 @@ class AuthFilterTest {
 
     PropertiesReader propertiesReader;
      ConnectionFactory connectionFactory;
-     UserDao userDao;
+     Dao<User> userDao;
      UserService userService;
 
      SecurityService securityService;
@@ -46,7 +47,7 @@ class AuthFilterTest {
     void setUp() throws ServletException {
 
         propertiesReader = new PropertiesReader("test-db.properties");
-        propertiesReader.readProperties();
+
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
         userDao = new JdbcUserDao(connectionFactory);

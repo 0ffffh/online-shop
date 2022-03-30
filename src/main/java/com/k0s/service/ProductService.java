@@ -1,6 +1,6 @@
 package com.k0s.service;
 
-import com.k0s.dao.ProductDao;
+import com.k0s.dao.Dao;
 import com.k0s.entity.Product;
 
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
 
 public class ProductService  {
 
-    private final ProductDao<Product> productDao;
+    private final Dao<Product> productDao;
 
-    public ProductService(ProductDao<Product> productDao) {
+    public ProductService(Dao<Product> productDao) {
         this.productDao = productDao;
     }
 

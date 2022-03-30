@@ -1,7 +1,7 @@
 package com.k0s.dao.jdbc;
 
 
-import com.k0s.dao.UserDao;
+import com.k0s.dao.Dao;
 
 import com.k0s.entity.user.Role;
 import com.k0s.entity.user.User;
@@ -22,14 +22,14 @@ class JdbcUserDaoTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    UserDao userDao;
+    Dao<User> userDao;
 
 
     @BeforeEach
     void setUp() throws SQLException {
 
         propertiesReader = new PropertiesReader("test-db.properties");
-        propertiesReader.readProperties();
+
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
         userDao = new JdbcUserDao(connectionFactory);
@@ -46,14 +46,14 @@ class JdbcUserDaoTest {
     @Test
     void getUser() {
         String userName = "user";
-        User user = userDao.getUser(userName);
-        System.out.println(user);
+        User user = userDao.get(userName);
+
 
         assertEquals(userName, user.getName());
         assertEquals(Role.USER, user.getRole());
 
 
-        assertThrows(RuntimeException.class, () -> userDao.getUser("notExistUser"));
-        assertThrows(RuntimeException.class, () -> userDao.getUser(null));
+        assertThrows(RuntimeException.class, () -> userDao.get("notExistUser"));
+        assertThrows(RuntimeException.class, () -> userDao.get(null));
     }
 }

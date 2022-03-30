@@ -1,9 +1,10 @@
 package com.k0s.service;
 
-import com.k0s.dao.UserDao;
+import com.k0s.dao.Dao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcUserDao;
 import com.k0s.entity.user.Role;
+import com.k0s.entity.user.User;
 import com.k0s.security.Session;
 import com.k0s.util.PropertiesReader;
 import org.flywaydb.core.Flyway;
@@ -20,7 +21,7 @@ class SecurityServiceTest {
 
     static PropertiesReader propertiesReader;
     static ConnectionFactory connectionFactory;
-    static UserDao userDao;
+    static Dao<User> userDao;
     static UserService userService;
 
     static SecurityService securityService;
@@ -32,7 +33,7 @@ class SecurityServiceTest {
     static void setUp()  {
 
         propertiesReader = new PropertiesReader("test-db.properties");
-        propertiesReader.readProperties();
+
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
         userDao = new JdbcUserDao(connectionFactory);

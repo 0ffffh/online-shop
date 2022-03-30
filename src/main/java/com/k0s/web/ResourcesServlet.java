@@ -22,7 +22,7 @@ public class ResourcesServlet extends HttpServlet {
                 resp.getOutputStream().write(buffer, 0, count);
         } catch (IOException e) {
             e.printStackTrace();
-            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

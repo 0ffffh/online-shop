@@ -77,7 +77,7 @@ public class AuthFilter implements Filter {
         if (session == null) {
             return false;
         }
-        return role.equals(session.getRole());
+        return role.equals(session.getUser().getRole());
     }
 
     @Override

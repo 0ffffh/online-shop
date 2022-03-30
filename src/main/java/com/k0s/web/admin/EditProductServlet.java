@@ -16,10 +16,10 @@ import java.util.Map;
 
 @Slf4j
 public class EditProductServlet extends HttpServlet {
-
+    private static final String HTML_PAGE = "editProduct.html";
     private final ProductService productService;
 
-    public EditProductServlet(ProductService productService){
+    public EditProductServlet(ProductService productService) {
         this.productService = productService;
     }
 
@@ -37,10 +37,10 @@ public class EditProductServlet extends HttpServlet {
 
             resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(PageGenerator.getInstance().getPage("editProduct.html", pageVariables));
+            resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
 
         } catch (Exception e) {
-            log.error("GET ", e);
+            log.error(e.getMessage());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
@@ -48,27 +48,31 @@ public class EditProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        if (!isValidRequest(req)){
+        if (!isValidRequest(req)) {
+            doGet(req, resp);
+        } else {
+            try {
+                productService.update(
+                        Product.builder()
+                                .id(Long.parseLong(req.getParameter("id")))
+                                .name(req.getParameter("name"))
+                                .price(Double.parseDouble(req.getParameter("price")))
+                                .creationDate(LocalDateTime.now())
+                                .description(req.getParameter("description"))
+                                .build());
+            } catch (Exception e) {
+                log.error("Edit product error ", e);
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            }
             doGet(req, resp);
         }
-        try {
-            productService.update(new Product(Long.parseLong(req.getParameter("id")),
-                    req.getParameter("name"),
-                    Double.parseDouble(req.getParameter("price")),
-                    LocalDateTime.now(),
-                    req.getParameter("description")));
-        } catch (Exception e) {
-            log.error("Product edit ",e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-        }
-        doGet(req, resp);
     }
 
 
-    private boolean isValidRequest(HttpServletRequest req){
+    private boolean isValidRequest(HttpServletRequest req) {
         String name = req.getParameter("name");
         String price = req.getParameter("price");
-        return name != null && name.matches("^[a-z0-9_-]{3,25}$") &&
+        return name != null &&
                 price != null && price.length() > 0 &&
                 price.matches("[+]?\\d*\\.?\\d+");
     }
