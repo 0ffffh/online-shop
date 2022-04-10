@@ -83,7 +83,12 @@ public class SecurityService {
 
     public void scheduleClearSessionList(long delay, long period){
         schedule.scheduleAtFixedRate(() ->
-                    sessionList.entrySet().removeIf(e -> LocalDateTime.now().isBefore(e.getValue().getExpireDate())),
+                {
+                    log.info("Clearing session list");
+                    int countSessions = sessionList.size();
+                    sessionList.entrySet().removeIf(e -> LocalDateTime.now().isAfter(e.getValue().getExpireDate()));
+                    log.info("Deleted {} inactive sessions", countSessions - sessionList.size());
+                },
                 delay, period, TimeUnit.MINUTES);
     }
 }
