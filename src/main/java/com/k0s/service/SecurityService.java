@@ -10,18 +10,21 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 @Slf4j
 public class SecurityService {
     private final UserService userService;
-    private final Map<String, Session> sessionList = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, Session> sessionList = new ConcurrentHashMap<>();
 
     private final Properties properties;
 
     public SecurityService(UserService userService, Properties properties) {
         this.userService = userService;
         this.properties = properties;
+        scheduleClearSessionList(
+                Long.parseLong(properties.getProperty("session.clearPeriod")),
+                Long.parseLong(properties.getProperty("session.clearDelay")));
     }
 
 
@@ -78,6 +81,12 @@ public class SecurityService {
         return null;
     }
 
+    public void scheduleClearSessionList(long delay, long period){
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        scheduledExecutorService.scheduleAtFixedRate(() ->
+                    sessionList.entrySet().removeIf(e -> LocalDateTime.now().isBefore(e.getValue().getExpireDate())),
+                delay, period, TimeUnit.MINUTES);
+    }
 }
 
 
