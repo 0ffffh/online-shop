@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -16,6 +15,7 @@ import java.util.concurrent.*;
 public class SecurityService {
     private final UserService userService;
     private final ConcurrentMap<String, Session> sessionList = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
 
     private final Properties properties;
 
@@ -82,8 +82,7 @@ public class SecurityService {
     }
 
     public void scheduleClearSessionList(long delay, long period){
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-        scheduledExecutorService.scheduleAtFixedRate(() ->
+        schedule.scheduleAtFixedRate(() ->
                     sessionList.entrySet().removeIf(e -> LocalDateTime.now().isBefore(e.getValue().getExpireDate())),
                 delay, period, TimeUnit.MINUTES);
     }
