@@ -1,6 +1,7 @@
 package com.k0s.dao.jdbc;
 
 import com.k0s.dao.Dao;
+import com.k0s.dao.ProductDao;
 import com.k0s.entity.Product;
 import com.k0s.util.PropertiesReader;
 import org.flywaydb.core.Flyway;
@@ -30,7 +31,8 @@ class JdbcProductDaoTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    Dao<Product> jdbcProductDao;
+
+    ProductDao jdbcProductDao;
 
 
     @BeforeEach
@@ -67,7 +69,7 @@ class JdbcProductDaoTest {
     @Test
     @DisplayName("JdbcProductDao getAll() mocked test")
     void getAll() throws SQLException {
-        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        ProductDao jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
 
         List<Product> productList = jdbcProductDao.getAll();
 
@@ -90,7 +92,7 @@ class JdbcProductDaoTest {
     @DisplayName("JdbcProductDao get() mocked test")
     void get() throws SQLException {
 
-        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        ProductDao jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
 
         Product product = jdbcProductDao.get(1);
         assertNotNull(product);
@@ -125,7 +127,7 @@ class JdbcProductDaoTest {
     @DisplayName("JdbcProductDao remove() mocked test")
     void remove() throws SQLException {
 
-        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        ProductDao jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
         jdbcProductDao.remove(1);
 
         verify(mockPreparedStatement, times(1)).setLong(1, 1);
@@ -157,7 +159,7 @@ class JdbcProductDaoTest {
                 .description("new product")
                 .creationDate(LocalDateTime.now())
                 .build();
-        Dao<Product> jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
+        ProductDao jdbcProductDao = new JdbcProductDao(mockConnectionFactory);
 
         jdbcProductDao.update(product);
 

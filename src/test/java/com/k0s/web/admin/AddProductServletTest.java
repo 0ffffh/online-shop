@@ -1,6 +1,7 @@
 package com.k0s.web.admin;
 
 import com.k0s.dao.Dao;
+import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.entity.Product;
@@ -20,6 +21,9 @@ import java.sql.Connection;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -29,7 +33,8 @@ class AddProductServletTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    Dao<Product> jdbcProductDao;
+//    Dao<Product> jdbcProductDao;
+    ProductDao jdbcProductDao;
     ProductService productService;
     AddProductServlet addProductServlet;
     HttpServletRequest servletRequest;
@@ -39,7 +44,8 @@ class AddProductServletTest {
     @BeforeEach
     void setUp() {
 
-        propertiesReader = new PropertiesReader("test-db.properties");
+//        propertiesReader = new PropertiesReader("test-db.properties");
+        propertiesReader = new PropertiesReader("application.properties");
 
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
@@ -59,24 +65,46 @@ class AddProductServletTest {
 
     @Test
     @DisplayName("Add product")
-    void testAddServlet() throws IOException {
+    void testAddServlet() throws IOException, InterruptedException {
 
-        when(servletRequest.getParameter("name")).thenReturn("banana");
+        when(servletRequest.getParameter("name")).thenReturn("KKKK");
         when(servletRequest.getParameter("price")).thenReturn("111");
         when(servletRequest.getParameter("description")).thenReturn("banana");
         when(servletResponse.getWriter()).thenReturn(mock(PrintWriter.class));
 
-        int size = productService.getAll().size();
-        addProductServlet.doPost(servletRequest, servletResponse);
-        List<Product> productList = productService.getAll();
-        for (Product product : productList) {
-            System.out.println(product);
-        }
-        Product product = productService.search("banana").get(0);
+//        int size = productService.getAll().size();
+//        addProductServlet.doPost(servletRequest, servletResponse);
+//        List<Product> productList = productService.getAll();
+//        for (Product product : productList) {
+//            System.out.println(product);
+//        }
+//        Product product = productService.search("banana").get(0);
+//
+//        assertEquals("banana", product.getName());
+//        assertEquals("banana", product.getDescription());
+//        assertTrue(size < );
+        System.out.println(productService.getAll().size());
+        long before = System.currentTimeMillis();
 
-        assertEquals("banana", product.getName());
-        assertEquals("banana", product.getDescription());
-        assertTrue(size < productService.getAll().size());
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        for (int i = 0; i < 1000; i++) {
+            executorService.submit(() -> {
+                try {
+
+                    addProductServlet.doPost(servletRequest, servletResponse);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        executorService.shutdown();
+
+        executorService.awaitTermination(3, TimeUnit.MINUTES);
+        System.out.println(System.currentTimeMillis() - before + " ms");
+//        Thread.sleep(2L);
+        System.out.println(productService.getAll().size());
 
     }
 

@@ -3,14 +3,16 @@ package com.k0s.dao.jdbc;
 
 import com.k0s.entity.user.Role;
 import com.k0s.entity.user.User;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@NoArgsConstructor
 public class UserRowMapper {
 
-    public static User mapRow(@NonNull ResultSet resultSet) throws SQLException {
+    public User mapRow(@NonNull ResultSet resultSet) throws SQLException {
 
         return User.builder()
                 .id(resultSet.getLong("id"))

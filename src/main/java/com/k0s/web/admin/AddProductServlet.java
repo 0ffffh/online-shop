@@ -42,7 +42,8 @@ public class AddProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!isValidRequest(req)) {
-            doGet(req, resp);
+//            doGet(req, resp);
+            resp.sendRedirect("/admin/product/add");
         } else {
             try {
                 productService.add(Product.builder()

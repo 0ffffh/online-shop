@@ -13,16 +13,16 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: online-shop
 
-  pgadmin:
-    container_name: pgadmin4
-    image: dpage/pgadmin4
+  adminer:
+    image: adminer
+    container_name: adminer
     restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - 5050:80
-    links:
-      - postgres:db
+      - 3000:8080
+    links: 
+      - dbpostgres:db
+    depends_on:
+      - dbpostgres
+
 
       

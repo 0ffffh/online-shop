@@ -1,13 +1,12 @@
 package com.k0s.service;
 
-import com.k0s.dao.Dao;
-
+import com.k0s.dao.UserDao;
 import com.k0s.entity.user.User;
 
 public class UserService {
-    private final Dao<User> userDao;
+    private final UserDao userDao;
 
-    public UserService(Dao<User> userDao) {
+    public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
 

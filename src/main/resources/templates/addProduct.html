@@ -76,7 +76,7 @@
             <div class="st_table">
                 <#list products as product>
                 <div class="st_row">
-                    <div class="st_column id">${product.id}</div>
+                    <div class="st_column id">${product.id?long?c}</div>
 
                     <div class="st_column name">
                         <#if product.name??>

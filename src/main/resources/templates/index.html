@@ -11,7 +11,7 @@
 </head>
 <body class="bg-secondary">
 
-<#if role == "guest">
+<#if role == "GUEST">
 <a href="/login">
     <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Login</button>
 </a>
@@ -26,7 +26,7 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">OnlineShop</a>
             <div class="collapse navbar-collapse">
-                <#if role == "admin">
+                <#if role == "ADMIN">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <a class="nav-link active" href="/admin/product/add">
                         <button class="btn btn-outline-success" type="submit">Add product</button>
@@ -34,7 +34,7 @@
                 </ul>
             </#if>
 
-            <#if role == "user">
+            <#if role == "USER">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a class="nav-link active" href="/user/cart">Cart</a>
@@ -57,7 +57,7 @@
             <h2>Products
             </h2>
             <div class="st_row">
-                <#if role == "admin">
+                <#if role == "ADMIN">
                 <div class="st_column id">ID</div>
             </#if>
             <div class="st_column name">Name</div>
@@ -70,8 +70,8 @@
         <#list products as product>
         <div class="st_row">
 
-            <#if role == "admin">
-            <div class="st_column id">${product.id}</div>
+            <#if role == "ADMIN">
+            <div class="st_column id">${product.id?long?c}</div>
         </#if>
         <div class="st_column name">
             <#if product.name??>
@@ -97,20 +97,20 @@
             </#if>
         </div>
 
-        <#if role == "admin">
+        <#if role == "ADMIN">
         <div class="st_column edit">
-            <a href="/admin/product/edit?id=${product.id}">
+            <a href="/admin/product/edit?id=${product.id?long?c}">
                 <button type="button" class="btn btn-dark"  type="submit">Edit</button>
             </a>
         </div>
         <div class="st_column delete">
-            <a href="/admin/product/delete?id=${product.id}">
+            <a href="/admin/product/delete?id=${product.id?long?c}">
                 <button type="button" class="btn btn-dark"  type="submit">Delete</button>
             </a>
         </div>
         </#if>
 
-        <#if role == "user">
+        <#if role == "USER">
         <div class="st_column edit">
             <a href="/user/product/add?id=${product.id}">
                 <button type="button" class="btn btn-dark"  type="submit">Add to cart</button>

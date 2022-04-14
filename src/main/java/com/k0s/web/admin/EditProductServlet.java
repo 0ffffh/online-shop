@@ -3,6 +3,7 @@ package com.k0s.web.admin;
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;
 import com.k0s.util.PageGenerator;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,6 @@ public class EditProductServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-
         try {
             Product product = productService.get(Long.parseLong(req.getParameter("id")));
             Map<String, Object> pageVariables = new HashMap<>();
@@ -40,7 +40,7 @@ public class EditProductServlet extends HttpServlet {
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
 
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Exception ", e);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
@@ -48,8 +48,12 @@ public class EditProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(req.getServletPath() + "?" + req.getQueryString());
+
+        System.out.println(req.getServletPath() + "?" + req.getQueryString());
+
         if (!isValidRequest(req)) {
-            doGet(req, resp);
+            resp.sendRedirect("/admin/product/edit?id="+req.getParameter("id"));
         } else {
             try {
                 productService.update(
@@ -62,9 +66,11 @@ public class EditProductServlet extends HttpServlet {
                                 .build());
             } catch (Exception e) {
                 log.error("Edit product error ", e);
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-            doGet(req, resp);
+//            doGet(req, resp);
+            resp.sendRedirect("/admin/product/edit?id="+req.getParameter("id"));
+
         }
     }
 

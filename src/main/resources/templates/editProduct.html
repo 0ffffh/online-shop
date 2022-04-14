@@ -54,7 +54,7 @@
 
                     <div class="st_column id">
                         <#if id??>
-                        ${id}
+                        ${id?long?c}
                         </#if>
                     </div>
                     <div class="st_column name">
@@ -100,7 +100,7 @@
                     <div class="st_column date"><input type="text" value=${price?string.computer} name="price"/></div>
                     <div class="st_column date"><textarea rows="3" cols="30" name="description"/>${description}</textarea></div>
                     <div class="st_column price">
-                        <button type="submit" class="btn btn-success" name="id" value=${id}>Update</button>
+                        <button type="submit" class="btn btn-success" name="id" value=${id?c}>Update</button>
                     </div>
                 </div>
             </form>

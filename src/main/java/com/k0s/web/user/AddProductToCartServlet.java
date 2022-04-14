@@ -21,11 +21,12 @@ public class AddProductToCartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Session session = (Session) req.getAttribute("session");
-            session.getCart().add(productService.get(Long.parseLong(req.getParameter("id"))));
+            long productId = Long.parseLong(req.getParameter("id"));
+            productService.addToCart(session.getCart(), productId);
+//            session.getCart().add(productService.get(productId));
         } catch (Exception e) {
             log.info(e.getMessage());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-
         }
         resp.sendRedirect("/");
     }

@@ -21,8 +21,8 @@ public class DeleteProductServlet extends HttpServlet {
         try {
             productService.remove(Integer.parseInt(req.getParameter("id")));
         } catch (Exception e) {
-            log.error("Delete product error",e);
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            log.error("Delete product error", e);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
         }
         resp.sendRedirect("/");

@@ -34,12 +34,12 @@ public class LoginServlet extends HttpServlet {
         if (token != null) {
             log.info("User <{}> authorized, token = {}", username, token);
             Cookie cookie = new Cookie("user-token", token);
-            cookie.setMaxAge(Integer.parseInt(securityService.getProperties().getProperty("security.sessionTimeout")));
+            cookie.setMaxAge(securityService.getSessionMaxAge());
             resp.addCookie(cookie);
             resp.sendRedirect("/");
         } else {
             log.info("User <{}> not authorized", username);
-            doGet(req, resp);
+            resp.sendRedirect("/login");
         }
     }
 }

@@ -1,12 +1,14 @@
 package com.k0s.web.filter;
 
 import com.k0s.dao.Dao;
+import com.k0s.dao.UserDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcUserDao;
 import com.k0s.entity.user.Role;
 import com.k0s.entity.user.User;
 import com.k0s.security.Session;
 import com.k0s.service.SecurityService;
+import com.k0s.service.SessionService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
 import jakarta.servlet.FilterChain;
@@ -36,8 +38,10 @@ class AuthFilterTest {
 
     PropertiesReader propertiesReader;
      ConnectionFactory connectionFactory;
-     Dao<User> userDao;
+//     Dao<User> userDao;
+     UserDao userDao;
      UserService userService;
+     SessionService sessionService;
 
      SecurityService securityService;
      AuthFilter authFilter;
@@ -52,7 +56,8 @@ class AuthFilterTest {
         connectionFactory = new ConnectionFactory(properties);
         userDao = new JdbcUserDao(connectionFactory);
         userService = new UserService(userDao);
-        securityService = new SecurityService(userService, propertiesReader.getProperties());
+        sessionService = new SessionService(userService, properties);
+        securityService = new SecurityService(sessionService, properties);
         authFilter = new AuthFilter(securityService);
         Connection connection = connectionFactory.getConnection();
         assertNotNull(connection);

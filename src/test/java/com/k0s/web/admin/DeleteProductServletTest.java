@@ -1,6 +1,7 @@
 package com.k0s.web.admin;
 
 import com.k0s.dao.Dao;
+import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.entity.Product;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +29,9 @@ class DeleteProductServletTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    Dao<Product> jdbcProductDao;
+//    Dao<Product> jdbcProductDao;
+    ProductDao jdbcProductDao;
+
     ProductService productService;
     DeleteProductServlet deleteProductServlet;
     AddProductServlet addProductServlet;
@@ -39,7 +43,8 @@ class DeleteProductServletTest {
     @BeforeEach
     void setUp() throws SQLException {
 
-        propertiesReader = new PropertiesReader("test-db.properties");
+//        propertiesReader = new PropertiesReader("test-db.properties");
+        propertiesReader = new PropertiesReader("application.properties");
 
         Properties properties = propertiesReader.getProperties();
         connectionFactory = new ConnectionFactory(properties);
@@ -62,14 +67,20 @@ class DeleteProductServletTest {
 
     @Test
     void doGet() throws IOException, ServletException {
-        when(servletRequest.getParameter("id")).thenReturn("1").thenReturn("values");
+//        when(servletRequest.getParameter("id")).thenReturn("1").thenReturn("values");
+//
+//        when(servletResponse.getWriter()).thenReturn(mock(PrintWriter.class));
+//
+//        int size = productService.getAll().size();
+//        deleteProductServlet.doGet(servletRequest, servletResponse);
+//        assertTrue(productService.search("book").isEmpty());
+//        assertTrue(size > productService.getAll().size());
+        List<Product> list = productService.search("KKKK");
+        System.out.println(list.size());
 
-        when(servletResponse.getWriter()).thenReturn(mock(PrintWriter.class));
-
-        int size = productService.getAll().size();
-        deleteProductServlet.doGet(servletRequest, servletResponse);
-        assertTrue(productService.search("book").isEmpty());
-        assertTrue(size > productService.getAll().size());
+        for (Product product : list) {
+            productService.remove(product.getId());
+        }
 
 
     }

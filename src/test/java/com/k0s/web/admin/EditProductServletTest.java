@@ -1,6 +1,7 @@
 package com.k0s.web.admin;
 
 import com.k0s.dao.Dao;
+import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.entity.Product;
@@ -29,7 +30,8 @@ class EditProductServletTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    Dao<Product> jdbcProductDao;
+//    Dao<Product> jdbcProductDao;
+    ProductDao jdbcProductDao;
     ProductService productService;
     EditProductServlet editProductServlet;
     HttpServletRequest servletRequest;

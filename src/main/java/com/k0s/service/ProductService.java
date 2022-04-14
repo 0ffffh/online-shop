@@ -1,6 +1,6 @@
 package com.k0s.service;
 
-import com.k0s.dao.Dao;
+import com.k0s.dao.ProductDao;
 import com.k0s.entity.Product;
 
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
 
 public class ProductService  {
 
-    private final Dao<Product> productDao;
+    private final ProductDao productDao;
 
-    public ProductService(Dao<Product> productDao) {
+    public ProductService(ProductDao productDao) {
         this.productDao = productDao;
     }
 
@@ -36,5 +36,9 @@ public class ProductService  {
 
     public List<Product> search(String value) {
         return productDao.search(value);
+    }
+
+    public void addToCart(List<Product> cart, long productId) {
+        cart.add(productDao.get(productId));
     }
 }

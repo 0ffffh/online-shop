@@ -3,6 +3,7 @@ package com.k0s.dao.jdbc;
 
 import com.k0s.dao.Dao;
 
+import com.k0s.dao.UserDao;
 import com.k0s.entity.user.Role;
 import com.k0s.entity.user.User;
 import com.k0s.util.PropertiesReader;
@@ -22,7 +23,7 @@ class JdbcUserDaoTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    Dao<User> userDao;
+    UserDao userDao;
 
 
     @BeforeEach

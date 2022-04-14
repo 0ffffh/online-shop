@@ -2,10 +2,12 @@ package com.k0s.web;
 
 import com.k0s.dao.Dao;
 
+import com.k0s.dao.UserDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcUserDao;
 import com.k0s.entity.user.User;
 import com.k0s.service.SecurityService;
+import com.k0s.service.SessionService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
 import com.k0s.web.filter.AuthFilter;
@@ -33,8 +35,10 @@ class LoginServletTest {
 
     PropertiesReader propertiesReader;
     ConnectionFactory connectionFactory;
-    Dao<User> userDao;
+//    Dao<User> userDao;
+    UserDao userDao;
     UserService userService;
+    SessionService sessionService;
 
     SecurityService securityService;
     LoginServlet loginServlet;
@@ -48,7 +52,8 @@ class LoginServletTest {
         connectionFactory = new ConnectionFactory(properties);
         userDao = new JdbcUserDao(connectionFactory);
         userService = new UserService(userDao);
-        securityService = new SecurityService(userService, propertiesReader.getProperties());
+        sessionService = new SessionService(userService, properties);
+        securityService = new SecurityService(sessionService, properties);
         loginServlet = new LoginServlet(securityService);
         Connection connection = connectionFactory.getConnection();
         assertNotNull(connection);

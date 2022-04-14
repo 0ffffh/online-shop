@@ -34,23 +34,24 @@ public class SearchServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage("index.html", pageVariables));
         }   catch (Exception e) {
-            e.printStackTrace();
+            log.info("Search fail " , e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try{
-            productService.remove(Long.parseLong(req.getParameter("id")));
-        } catch (Exception e) {
-            log.error("Search crashed: ", e);
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-        doGet(req, resp);
-
-    }
+//    @Override
+//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        try{
+//            productService.remove(Long.parseLong(req.getParameter("id")));
+//        } catch (Exception e) {
+//            log.error("Search crashed: ", e);
+//            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+//        }
+////        doGet(req, resp);
+//        requestDispatcher.forward(request, response);
+//
+//    }
 
 
 }

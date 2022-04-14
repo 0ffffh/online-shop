@@ -24,8 +24,7 @@ public enum Role {
         return GUEST;
     }
 
-    @Override
-    public String toString() {
+    public String getRole(){
         return role;
     }
 }

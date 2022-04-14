@@ -26,7 +26,8 @@ class ProductRowMapperTest {
         when(resultSet.getDouble(any())).thenReturn(111.1);
         when(resultSet.getTimestamp(any())).thenReturn(Timestamp.valueOf(now));
 
-        Product product = ProductRowMapper.mapRow(resultSet);
+        ProductRowMapper productRowMapper = new ProductRowMapper();
+        Product product = productRowMapper.mapRow(resultSet);
 
         assertEquals(resultSet.getString("name"), product.getName());
         assertEquals(resultSet.getString("description"), product.getDescription());
@@ -47,7 +48,8 @@ class ProductRowMapperTest {
         when(resultSet.getDouble(any())).thenReturn((double)0);
         when(resultSet.getTimestamp(any())).thenReturn(Timestamp.valueOf(now));
 
-        Product product = ProductRowMapper.mapRow(resultSet);
+        ProductRowMapper productRowMapper = new ProductRowMapper();
+        Product product = productRowMapper.mapRow(resultSet);
         System.out.println(product);
 
         assertEquals(resultSet.getString("name"), product.getName());

@@ -1,96 +1,87 @@
 package com.k0s.service;
 
-import com.k0s.entity.user.User;
-import com.k0s.security.PasswordCrypt;
+
 import com.k0s.security.Session;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class SecurityService {
-    private final UserService userService;
-    private final ConcurrentMap<String, Session> sessionList = new ConcurrentHashMap<>();
+    private final SessionService sessionService;
+    private final List<Session> sessionList = new CopyOnWriteArrayList<>();
     private final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
-
     private final Properties properties;
 
-    public SecurityService(UserService userService, Properties properties) {
-        this.userService = userService;
+    public SecurityService(SessionService sessionService, Properties properties) {
+        this.sessionService = sessionService;
         this.properties = properties;
         scheduleClearSessionList(
                 Long.parseLong(properties.getProperty("session.clearPeriod")),
                 Long.parseLong(properties.getProperty("session.clearDelay")));
     }
 
-
     public String login(String name, String password) {
-        try {
-            User user = userService.getUser(name);
-            String token = getToken(user.getPassword(), password, user.getSalt());
-            sessionList.put(token, Session.builder()
-                    .token(token)
-                    .user(user)
-                    .expireDate(LocalDateTime.now().plusSeconds(Long.parseLong(properties.getProperty("security.sessionTimeout"))))
-                    .cart(new ArrayList<>())
-                    .build());
-            return token;
-        } catch (RuntimeException e) {
-            log.info("User <{}> login fail: {}", name, e.getMessage());
+        Session session = sessionService.getSession(name, password);
+        if (session == null) {
             return null;
         }
+
+        sessionList.add(session);
+        return session.getToken();
     }
 
     public Session getSession(String token) {
-        Session session = sessionList.get(token);
-        if (isValidSession(session, token)) {
+        Session session = sessionList.stream().filter(e -> token.equals(e.getToken())).findFirst().orElse(null);
+
+        if (isValidSession(session)) {
             return session;
         }
         return null;
     }
 
     public void logout(String token) {
-        sessionList.remove(token);
+        sessionList.removeIf(e -> token.equals(e.getToken()));
     }
 
-    public Properties getProperties() {
-        return properties;
+    public List<String> getSkipList() {
+        return Arrays.asList(properties.getProperty("security.skipPath").split(","));
     }
 
+    public int getSessionMaxAge() {
+        return Integer.parseInt(properties.getProperty("security.sessionTimeout"));
+    }
 
-    private boolean isValidSession(Session session, String token) {
+//TODO: переместить в сессион сервис
+    private boolean isValidSession(Session session) {
         if (session == null) {
             return false;
         }
         if (LocalDateTime.now().isBefore(session.getExpireDate())) {
             return true;
         }
-        sessionList.remove(token);
+        sessionList.remove(session);
         return false;
     }
 
-    private String getToken(String userPassword, String password, String salt) {
-        String cryptPassword = PasswordCrypt.encryptPassword(password, salt);
-        if (userPassword.equals(cryptPassword)) {
-            return UUID.randomUUID().toString();
-        }
-        return null;
+    private void scheduleClearSessionList(long delay, long period) {
+        schedule.scheduleAtFixedRate(this::clearSessionList, delay, period, TimeUnit.MINUTES);
     }
 
-    public void scheduleClearSessionList(long delay, long period){
-        schedule.scheduleAtFixedRate(() ->
-                {
-                    log.info("Clearing session list");
-                    int countSessions = sessionList.size();
-                    sessionList.entrySet().removeIf(e -> LocalDateTime.now().isAfter(e.getValue().getExpireDate()));
-                    log.info("Deleted {} inactive sessions", countSessions - sessionList.size());
-                },
-                delay, period, TimeUnit.MINUTES);
+    private void clearSessionList() {
+        log.info("Clearing session list");
+        int countSessions = sessionList.size();
+        sessionList.removeIf(e -> LocalDateTime.now().isAfter(e.getExpireDate()));
+        log.info("Deleted {} inactive sessions", countSessions - sessionList.size());
     }
+
 }
 
 

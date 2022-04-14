@@ -18,19 +18,22 @@ import java.util.List;
 public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
     private static final String SESSION_ATT = "session";
-    private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
+//    private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
+    private final List<String> SKIP_AUTHORIZATION_PATH_LIST;
 
 
     private final SecurityService securityService;
 
     public AuthFilter(SecurityService securityService) {
         this.securityService = securityService;
+        this.SKIP_AUTHORIZATION_PATH_LIST = securityService.getSkipList();
+
     }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info("Authorization filter init");
-        SKIP_AUTHORIZATION_PATH_LIST.addAll(Arrays.asList(securityService.getProperties().getProperty("security.skipPath").split(",")));
+//        SKIP_AUTHORIZATION_PATH_LIST.addAll(Arrays.asList(securityService.getProperties().getProperty("security.skipPath").split(",")));
     }
 
     @Override
@@ -58,7 +61,7 @@ public class AuthFilter implements Filter {
         req.setAttribute(SESSION_ATT, session);
 
         for (Role role : Role.values()) {
-            if (requestPath.contains(role.toString())) {
+            if (requestPath.contains(role.getRole())) {
                 if (isAllow(session, role)) {
                     filterChain.doFilter(servletRequest, servletResponse);
                 } else {

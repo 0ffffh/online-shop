@@ -1,6 +1,8 @@
 package com.k0s;
 
 import com.k0s.dao.Dao;
+import com.k0s.dao.ProductDao;
+import com.k0s.dao.UserDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.dao.jdbc.JdbcUserDao;
@@ -8,6 +10,7 @@ import com.k0s.entity.Product;
 import com.k0s.entity.user.User;
 import com.k0s.service.ProductService;
 import com.k0s.service.SecurityService;
+import com.k0s.service.SessionService;
 import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
 import com.k0s.web.*;
@@ -46,13 +49,17 @@ public class JettyStart {
 
         flywayMigration(connectionFactory);
 
-        Dao<Product> jdbcProductDao = new JdbcProductDao(connectionFactory);
+//        Dao<Product> jdbcProductDao = new JdbcProductDao(connectionFactory);
+        ProductDao jdbcProductDao = new JdbcProductDao(connectionFactory);
         ProductService productService = new ProductService(jdbcProductDao);
 
-        Dao<User> jdbcUserDao = new JdbcUserDao(connectionFactory);
+//        Dao<User> jdbcUserDao = new JdbcUserDao(connectionFactory);
+        UserDao jdbcUserDao = new JdbcUserDao(connectionFactory);
         UserService userService = new UserService(jdbcUserDao);
+        SessionService sessionService = new SessionService(userService, properties);
 
-        SecurityService securityService = new SecurityService(userService, properties);
+//        SecurityService securityService = new SecurityService(userService, properties);
+        SecurityService securityService = new SecurityService(sessionService, properties);
 
         AuthFilter authFilter = new AuthFilter(securityService);
 

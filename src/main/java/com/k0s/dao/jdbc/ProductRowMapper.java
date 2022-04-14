@@ -1,16 +1,16 @@
 package com.k0s.dao.jdbc;
 
 import com.k0s.entity.Product;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
+@NoArgsConstructor
 public class ProductRowMapper {
 
-
-    public static Product mapRow(@NonNull ResultSet resultSet) throws SQLException {
+    public Product mapRow(@NonNull ResultSet resultSet) throws SQLException {
 
         return Product.builder()
                 .id(resultSet.getLong("id"))

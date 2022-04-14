@@ -26,12 +26,13 @@ class UserRowMapperTest {
         when(resultSet.getLong(any())).thenReturn(Long.valueOf(1));
 
 
-        User user  = UserRowMapper.mapRow(resultSet);
+        UserRowMapper userRowMapper = new UserRowMapper();
+        User user  = userRowMapper.mapRow(resultSet);
 
         assertEquals(resultSet.getString("name"), user.getName());
         assertEquals(resultSet.getString("password"), user.getPassword());
         assertEquals(resultSet.getString("salt"), user.getSalt());
-        assertEquals(resultSet.getString("role"), user.getRole().toString());
+        assertEquals(resultSet.getString("role"), user.getRole().getRole());
         assertEquals(resultSet.getLong("id"), user.getId());
     }
 }

@@ -26,8 +26,8 @@ public class CartServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
         } catch (Exception e) {
-            log.info(e.getMessage());
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            log.info("Cart exception ", e);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 
         }
     }
