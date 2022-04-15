@@ -2,6 +2,7 @@ package com.k0s.web.admin;
 
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;
+import com.k0s.service.ServiceLocator;
 import com.k0s.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,11 +17,11 @@ import java.util.Map;
 @Slf4j
 public class AddProductServlet extends HttpServlet {
     private static final String HTML_PAGE = "addProduct.html";
-    private final ProductService productService;
-
-    public AddProductServlet(ProductService productService) {
-        this.productService = productService;
-    }
+    private final ProductService productService = ServiceLocator.getService(ProductService.class);
+//    private final ProductService productService;
+//    public AddProductServlet(ProductService productService) {
+//        this.productService = productService;
+//    }
 
 
     @Override

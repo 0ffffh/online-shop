@@ -2,6 +2,7 @@ package com.k0s.web.admin;
 
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;
+import com.k0s.service.ServiceLocator;
 import com.k0s.util.PageGenerator;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -18,11 +19,12 @@ import java.util.Map;
 @Slf4j
 public class EditProductServlet extends HttpServlet {
     private static final String HTML_PAGE = "editProduct.html";
-    private final ProductService productService;
-
-    public EditProductServlet(ProductService productService) {
-        this.productService = productService;
-    }
+    private final ProductService productService = ServiceLocator.getService(ProductService.class);
+//    private final ProductService productService;
+//
+//    public EditProductServlet(ProductService productService) {
+//        this.productService = productService;
+//    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

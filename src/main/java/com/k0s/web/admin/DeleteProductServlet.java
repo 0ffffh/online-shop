@@ -1,6 +1,7 @@
 package com.k0s.web.admin;
 
 import com.k0s.service.ProductService;
+import com.k0s.service.ServiceLocator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,11 +12,11 @@ import java.io.IOException;
 
 @Slf4j
 public class DeleteProductServlet extends HttpServlet {
-    private final ProductService productService;
-
-    public DeleteProductServlet(ProductService productService) {
-        this.productService = productService;
-    }
+    private final ProductService productService = ServiceLocator.getService(ProductService.class);
+//    private final ProductService productService;
+//    public DeleteProductServlet(ProductService productService) {
+//        this.productService = productService;
+//    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {

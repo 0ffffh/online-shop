@@ -1,6 +1,5 @@
 package com.k0s.dao.jdbc;
 
-import com.k0s.dao.Dao;
 import com.k0s.dao.UserDao;
 import com.k0s.entity.user.User;
 import lombok.SneakyThrows;

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.k0s.web.filter.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
+
+
+
+    <servlet>
+        <servlet-name>Index</servlet-name>
+        <servlet-class>com.k0s.web.IndexServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Index</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>com.k0s.web.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>com.k0s.web.LogoutServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Resources</servlet-name>
+        <servlet-class>com.k0s.web.ResourcesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Resources</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Search</servlet-name>
+        <servlet-class>com.k0s.web.SearchServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Search</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
+
+<!--    ADMIN-->
+    <servlet>
+        <servlet-name>AdminAddProduct</servlet-name>
+        <servlet-class>com.k0s.web.admin.AddProductServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AdminAddProduct</servlet-name>
+        <url-pattern>/admin/product/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminEditProduct</servlet-name>
+        <servlet-class>com.k0s.web.admin.EditProductServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AdminEditProduct</servlet-name>
+        <url-pattern>/admin/product/edit</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminDeleteProduct</servlet-name>
+        <servlet-class>com.k0s.web.admin.DeleteProductServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AdminDeleteProduct</servlet-name>
+        <url-pattern>/admin/product/delete</url-pattern>
+    </servlet-mapping>
+
+<!--    USER-->
+    <servlet>
+        <servlet-name>UserCart</servlet-name>
+        <servlet-class>com.k0s.web.user.CartServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UserCart</servlet-name>
+        <url-pattern>/user/cart</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserAddProductToCart</servlet-name>
+        <servlet-class>com.k0s.web.user.AddProductToCartServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UserAddProductToCart</servlet-name>
+        <url-pattern>/user/product/add</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserDeleteProductFromCart</servlet-name>
+        <servlet-class>com.k0s.web.user.DeleteProductFromCartServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UserDeleteProductFromCart</servlet-name>
+        <url-pattern>/user/product/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>UserClearCart</servlet-name>
+        <servlet-class>com.k0s.web.user.ClearProductCartServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UserClearCart</servlet-name>
+        <url-pattern>/user/cart/clear</url-pattern>
+    </servlet-mapping>
+
+</web-app>
