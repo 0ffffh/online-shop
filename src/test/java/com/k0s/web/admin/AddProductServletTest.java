@@ -1,6 +1,5 @@
 package com.k0s.web.admin;
 
-import com.k0s.dao.Dao;
 import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
@@ -51,7 +50,7 @@ class AddProductServletTest {
         connectionFactory = new ConnectionFactory(properties);
         jdbcProductDao = new JdbcProductDao(connectionFactory);
         productService = new ProductService(jdbcProductDao);
-        addProductServlet = new AddProductServlet(productService);
+        addProductServlet = new AddProductServlet();
         servletRequest = mock(HttpServletRequest.class);
         servletResponse = mock(HttpServletResponse.class);
         Connection connection = connectionFactory.getConnection();

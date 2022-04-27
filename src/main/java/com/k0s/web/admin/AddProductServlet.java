@@ -3,7 +3,7 @@ package com.k0s.web.admin;
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;
 import com.k0s.service.ServiceLocator;
-import com.k0s.util.PageGenerator;
+import com.k0s.web.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,10 +18,6 @@ import java.util.Map;
 public class AddProductServlet extends HttpServlet {
     private static final String HTML_PAGE = "addProduct.html";
     private final ProductService productService = ServiceLocator.getService(ProductService.class);
-//    private final ProductService productService;
-//    public AddProductServlet(ProductService productService) {
-//        this.productService = productService;
-//    }
 
 
     @Override
@@ -32,10 +28,10 @@ public class AddProductServlet extends HttpServlet {
             pageVariables.put("products", productService.getAll());
 
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setContentType("text/html;charset=utf-8");
+//            resp.setContentType("text/html;charset=utf-8");
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
         } catch (Exception e) {
-            log.error("Add product page servlet error: ", e);
+            log.info("Add product page servlet error: ", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -44,7 +40,7 @@ public class AddProductServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!isValidRequest(req)) {
 //            doGet(req, resp);
-            resp.sendRedirect("/admin/product/add");
+            resp.sendRedirect(req.getHeader("referer"));
         } else {
             try {
                 productService.add(Product.builder()
@@ -54,10 +50,10 @@ public class AddProductServlet extends HttpServlet {
                         .description(req.getParameter("description"))
                         .build());
             } catch (Exception e) {
-                log.error("Add product error ",e);
+                log.info("Add product error ",e);
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             }
-            doGet(req, resp);
+            resp.sendRedirect(req.getHeader("referer"));
         }
     }
 

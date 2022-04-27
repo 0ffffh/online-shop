@@ -1,11 +1,10 @@
 package com.k0s.web;
 
-import com.k0s.entity.user.Role;
+import com.k0s.security.user.Role;
 import com.k0s.security.Session;
 import com.k0s.service.ProductService;
 import com.k0s.service.ServiceLocator;
-import com.k0s.util.PageGenerator;
-import jakarta.servlet.ServletException;
+import com.k0s.web.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,11 +17,6 @@ import java.util.Map;
 public class SearchServlet extends HttpServlet {
     private final ProductService productService = ServiceLocator.getService(ProductService.class);
 
-//    private final ProductService productService;
-
-//    public SearchServlet(ProductService productService){
-//        this.productService = productService;
-//    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try{
@@ -39,21 +33,6 @@ public class SearchServlet extends HttpServlet {
             log.info("Search fail " , e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
     }
-
-//    @Override
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        try{
-//            productService.remove(Long.parseLong(req.getParameter("id")));
-//        } catch (Exception e) {
-//            log.error("Search crashed: ", e);
-//            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-//        }
-////        doGet(req, resp);
-//        requestDispatcher.forward(request, response);
-//
-//    }
-
 
 }

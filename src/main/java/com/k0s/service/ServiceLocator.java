@@ -5,6 +5,8 @@ import com.k0s.dao.UserDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.dao.jdbc.JdbcUserDao;
+import com.k0s.security.SecurityService;
+import com.k0s.security.SessionService;
 import com.k0s.util.PropertiesReader;
 
 import java.util.HashMap;
@@ -21,22 +23,20 @@ public class ServiceLocator {
         Properties properties = propertiesReader.getProperties();
 
         ConnectionFactory connectionFactory = new ConnectionFactory(properties);
-
         ProductDao jdbcProductDao = new JdbcProductDao(connectionFactory);
+
         ProductService productService = new ProductService(jdbcProductDao);
 
         UserDao jdbcUserDao = new JdbcUserDao(connectionFactory);
+
         UserService userService = new UserService(jdbcUserDao);
+
         SessionService sessionService = new SessionService(userService, properties);
 
         SecurityService securityService = new SecurityService(sessionService, properties);
 
-//        addService(ConnectionFactory.class, connectionFactory);
         addService(ProductService.class, productService);
-//        addService(UserService.class, userService);
-//        addService(SessionService.class, sessionService);
         addService(SecurityService.class, securityService);
-
     }
 
     public static <T> T getService(Class<T> serviceClass){

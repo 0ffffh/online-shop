@@ -1,20 +1,19 @@
 package com.k0s.util;
 
+import com.k0s.web.util.ClasspathFileReader;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Objects;
 import java.util.Properties;
 
 @Slf4j
-public class PropertiesReader {
+public class PropertiesReader{
     private static final String DEFAULT_CONFIG_PATH = "application.properties";
     private final Properties properties = new Properties();
 
     public PropertiesReader(String path) {
-        readProperties(path);
+        readProperties(Objects.requireNonNullElse(path, DEFAULT_CONFIG_PATH));
     }
 
     public Properties getProperties() {
@@ -23,19 +22,13 @@ public class PropertiesReader {
 
 
     private void readProperties(String path) {
-        File file = new File(path);
-        try (InputStream inputStream = new FileInputStream(file.getAbsolutePath())) {
-            properties.load(inputStream);
-        } catch (IOException e) {
-            log.error("Can't read config file {}", file.getAbsolutePath(), e);
-            log.info("Try load default config");
-            try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_PATH)) {
+            try (InputStream inputStream = PropertiesReader.class.getClassLoader().getResourceAsStream(path)) {
                 properties.load(inputStream);
-            } catch (IOException ex) {
-                log.error("Load config failed");
-                throw new RuntimeException(ex);
+            } catch (IOException e) {
+                log.info("Load config failed", e);
+                throw new RuntimeException(e);
             }
         }
-    }
 }
+
 

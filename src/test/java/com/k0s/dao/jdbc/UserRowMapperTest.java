@@ -1,7 +1,8 @@
 package com.k0s.dao.jdbc;
 
 
-import com.k0s.entity.user.User;
+import com.k0s.dao.jdbc.mapper.UserRowMapper;
+import com.k0s.security.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;

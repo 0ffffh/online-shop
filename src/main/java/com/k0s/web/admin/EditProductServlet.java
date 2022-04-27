@@ -3,8 +3,7 @@ package com.k0s.web.admin;
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;
 import com.k0s.service.ServiceLocator;
-import com.k0s.util.PageGenerator;
-import jakarta.servlet.RequestDispatcher;
+import com.k0s.web.util.PageGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,11 +19,6 @@ import java.util.Map;
 public class EditProductServlet extends HttpServlet {
     private static final String HTML_PAGE = "editProduct.html";
     private final ProductService productService = ServiceLocator.getService(ProductService.class);
-//    private final ProductService productService;
-//
-//    public EditProductServlet(ProductService productService) {
-//        this.productService = productService;
-//    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -37,12 +31,11 @@ public class EditProductServlet extends HttpServlet {
             pageVariables.put("creation_date", product.getCreationDate());
             pageVariables.put("description", product.getDescription());
 
-            resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
 
         } catch (Exception e) {
-            log.error("Exception ", e);
+            log.info("Edit product servlet ", e);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
 
@@ -50,12 +43,8 @@ public class EditProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(req.getServletPath() + "?" + req.getQueryString());
-
-        System.out.println(req.getServletPath() + "?" + req.getQueryString());
-
         if (!isValidRequest(req)) {
-            resp.sendRedirect("/admin/product/edit?id="+req.getParameter("id"));
+            resp.sendRedirect(req.getHeader("referer"));
         } else {
             try {
                 productService.update(
@@ -67,12 +56,10 @@ public class EditProductServlet extends HttpServlet {
                                 .description(req.getParameter("description"))
                                 .build());
             } catch (Exception e) {
-                log.error("Edit product error ", e);
+                log.info("Edit product error ", e);
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
-//            doGet(req, resp);
-            resp.sendRedirect("/admin/product/edit?id="+req.getParameter("id"));
-
+            resp.sendRedirect(req.getHeader("referer"));
         }
     }
 

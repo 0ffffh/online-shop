@@ -1,7 +1,6 @@
-package com.k0s.service;
+package com.k0s.security;
 
 
-import com.k0s.security.Session;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -59,7 +58,6 @@ public class SecurityService {
         return Integer.parseInt(properties.getProperty("security.sessionTimeout"));
     }
 
-//TODO: переместить в сессион сервис
     private boolean isValidSession(Session session) {
         if (session == null) {
             return false;

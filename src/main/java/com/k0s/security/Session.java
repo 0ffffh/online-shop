@@ -1,7 +1,7 @@
 package com.k0s.security;
 
 import com.k0s.entity.Product;
-import com.k0s.entity.user.User;
+import com.k0s.security.user.User;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;

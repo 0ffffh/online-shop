@@ -1,6 +1,6 @@
 package com.k0s.dao.jdbc;
 
-import com.k0s.dao.Dao;
+
 import com.k0s.dao.ProductDao;
 import com.k0s.entity.Product;
 import com.k0s.util.PropertiesReader;

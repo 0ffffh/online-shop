@@ -1,18 +1,16 @@
-package com.k0s.dao.jdbc;
+package com.k0s.dao.jdbc.mapper;
 
 
-import com.k0s.entity.user.Role;
-import com.k0s.entity.user.User;
-import lombok.NoArgsConstructor;
+import com.k0s.security.user.Role;
+import com.k0s.security.user.User;
 import lombok.NonNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@NoArgsConstructor
 public class UserRowMapper {
 
-    public User mapRow(@NonNull ResultSet resultSet) throws SQLException {
+    public static User mapRow(@NonNull ResultSet resultSet) throws SQLException {
 
         return User.builder()
                 .id(resultSet.getLong("id"))

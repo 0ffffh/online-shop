@@ -3,7 +3,7 @@
 
     <filter>
         <filter-name>AuthFilter</filter-name>
-        <filter-class>com.k0s.web.filter.AuthFilter</filter-class>
+        <filter-class>com.k0s.web.security.AuthFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>AuthFilter</filter-name>

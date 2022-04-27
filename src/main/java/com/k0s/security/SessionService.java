@@ -1,8 +1,7 @@
-package com.k0s.service;
+package com.k0s.security;
 
-import com.k0s.entity.user.User;
-import com.k0s.security.PasswordCrypt;
-import com.k0s.security.Session;
+import com.k0s.security.user.User;
+import com.k0s.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

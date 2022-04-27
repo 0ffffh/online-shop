@@ -1,7 +1,7 @@
 package com.k0s.web.user;
 
 import com.k0s.security.Session;
-import com.k0s.util.PageGenerator;
+import com.k0s.web.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,9 +20,7 @@ public class CartServlet extends HttpServlet {
         try {
             Map<String, Object> pageVariables = new HashMap<>();
             Session session = (Session) req.getAttribute("session");
-
             pageVariables.put("products", session.getCart());
-            resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
         } catch (Exception e) {

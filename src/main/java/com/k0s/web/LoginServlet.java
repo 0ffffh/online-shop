@@ -1,9 +1,8 @@
 package com.k0s.web;
 
-import com.k0s.service.ProductService;
-import com.k0s.service.SecurityService;
+import com.k0s.security.SecurityService;
 import com.k0s.service.ServiceLocator;
-import com.k0s.util.PageGenerator;
+import com.k0s.web.util.PageGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -16,13 +15,6 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
     private final static String LOGIN_HTML_PAGE = "login.html";
     private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
-
-//    private final SecurityService securityService;
-//
-//    public LoginServlet(SecurityService securityService) {
-//        this.securityService = securityService;
-//    }
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -43,7 +35,7 @@ public class LoginServlet extends HttpServlet {
             resp.sendRedirect("/");
         } else {
             log.info("User <{}> not authorized", username);
-            resp.sendRedirect("/login");
+            resp.sendRedirect(req.getHeader("referer"));
         }
     }
 }

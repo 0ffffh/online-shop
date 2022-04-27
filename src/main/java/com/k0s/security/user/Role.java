@@ -1,4 +1,4 @@
-package com.k0s.entity.user;
+package com.k0s.security.user;
 
 public enum Role {
 

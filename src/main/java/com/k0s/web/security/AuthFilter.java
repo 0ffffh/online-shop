@@ -1,9 +1,8 @@
-package com.k0s.web.filter;
+package com.k0s.web.security;
 
-import com.k0s.entity.user.Role;
+import com.k0s.security.user.Role;
 import com.k0s.security.Session;
-import com.k0s.service.ProductService;
-import com.k0s.service.SecurityService;
+import com.k0s.security.SecurityService;
 import com.k0s.service.ServiceLocator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -21,23 +19,15 @@ public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
     private static final String SESSION_ATT = "session";
     private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
-//    private final List<String> SKIP_AUTHORIZATION_PATH_LIST;
+    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
 
-
-    private final SecurityService securityService = ServiceLocator.getService(SecurityService .class);
-//    private final SecurityService securityService;
-
-//    public AuthFilter(SecurityService securityService) {
-//        this.securityService = securityService;
-//        this.SKIP_AUTHORIZATION_PATH_LIST = securityService.getSkipList();
-//
-//    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info("Authorization filter init");
         SKIP_AUTHORIZATION_PATH_LIST.addAll(securityService.getSkipList());
     }
+
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -62,6 +52,7 @@ public class AuthFilter implements Filter {
             }
         }
         req.setAttribute(SESSION_ATT, session);
+        resp.setContentType("text/html;charset=utf-8");
 
         for (Role role : Role.values()) {
             if (requestPath.contains(role.getRole())) {

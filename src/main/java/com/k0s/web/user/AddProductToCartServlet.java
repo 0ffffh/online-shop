@@ -15,23 +15,17 @@ import java.io.IOException;
 public class AddProductToCartServlet extends HttpServlet {
     private final ProductService productService = ServiceLocator.getService(ProductService.class);
 
-    //    private final ProductService productService;
-//
-//    public AddProductToCartServlet(ProductService productService){
-//        this.productService = productService;
-//    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Session session = (Session) req.getAttribute("session");
             long productId = Long.parseLong(req.getParameter("id"));
             productService.addToCart(session.getCart(), productId);
-//            session.getCart().add(productService.get(productId));
         } catch (Exception e) {
             log.info(e.getMessage());
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        resp.sendRedirect("/");
+        resp.sendRedirect(req.getHeader("referer"));
     }
 
 }

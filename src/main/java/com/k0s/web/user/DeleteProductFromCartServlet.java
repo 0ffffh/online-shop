@@ -1,6 +1,9 @@
 package com.k0s.web.user;
 
+import com.k0s.entity.Product;
 import com.k0s.security.Session;
+import com.k0s.service.ProductService;
+import com.k0s.service.ServiceLocator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,17 +11,22 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 public class DeleteProductFromCartServlet extends HttpServlet {
+    private final ProductService productService = ServiceLocator.getService(ProductService.class);
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         Session session = (Session) req.getAttribute("session");
-        session.getCart().remove(Integer.parseInt(req.getParameter("id")));
+        int index = Integer.parseInt(req.getParameter("id"));
+        List<Product> productList= session.getCart();
+        System.out.println(productList.toString());
+        productService.removeFromCart(session.getCart(), index);
+        resp.sendRedirect(req.getHeader("referer"));
 
-        resp.sendRedirect("/user/cart");
     }
 
 }

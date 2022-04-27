@@ -1,5 +1,6 @@
 package com.k0s.dao.jdbc;
 
+import com.k0s.dao.jdbc.mapper.ProductRowMapper;
 import com.k0s.entity.Product;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.*;
@@ -8,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;

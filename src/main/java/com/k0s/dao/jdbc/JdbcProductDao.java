@@ -1,6 +1,7 @@
 package com.k0s.dao.jdbc;
 
 import com.k0s.dao.ProductDao;
+import com.k0s.dao.jdbc.mapper.ProductRowMapper;
 import com.k0s.entity.Product;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -13,24 +14,14 @@ import java.util.List;
 
 @Slf4j
 public class JdbcProductDao implements ProductDao {
-//public class JdbcProductDao implements Dao<Product> {
-//    private static final String GET_ALL_QUERY = "SELECT * FROM products";
-//    private static final String GET_PRODUCT_BY_ID_QUERY = "SELECT * FROM products WHERE id = ?";
-//    private static final String GET_PRODUCT_BY_NAME_QUERY = "SELECT * FROM products WHERE name = ?";
-//    private static final String ADD_PRODUCT_QUERY = "INSERT INTO products (name, price, creation_date, description) values (?, ?, ?, ?);";
-//    private static final String REMOVE_PRODUCT_QUERY = "DELETE FROM products WHERE id = ?;";
-//    private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name = ?, price = ?, creation_date = ?, description = ?  WHERE id = ?;";
-//    private static final String SEARCH_PRODUCT_QUERY = "SELECT * FROM products WHERE LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)";
 
     private static final String GET_ALL_QUERY = "SELECT id, name, price, creation_date, description FROM products";
     private static final String GET_PRODUCT_BY_ID_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE id = ?";
-    private static final String GET_PRODUCT_BY_NAME_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE name = ?";
     private static final String ADD_PRODUCT_QUERY = "INSERT INTO products (name, price, creation_date, description) values (?, ?, ?, ?);";
     private static final String REMOVE_PRODUCT_QUERY = "DELETE FROM products WHERE id = ?;";
     private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name = ?, price = ?, creation_date = ?, description = ?  WHERE id = ?;";
     private static final String SEARCH_PRODUCT_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)";
 
-    private final ProductRowMapper productRowMapper = new ProductRowMapper();
     private final DataSource dataSource;
 
     public JdbcProductDao(DataSource dataSource) {
@@ -45,13 +36,10 @@ public class JdbcProductDao implements ProductDao {
              ResultSet resultSet = preparedStatement.executeQuery()) {
             List<Product> productList = new ArrayList<>();
             while (resultSet.next()) {
-                productList.add(productRowMapper.mapRow(resultSet));
+                productList.add(ProductRowMapper.mapRow(resultSet));
             }
             return productList;
         }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Get product list error  " + e.getMessage());
-//        }
     }
 
     @SneakyThrows
@@ -64,31 +52,11 @@ public class JdbcProductDao implements ProductDao {
                 if (!resultSet.next()) {
                     throw new RuntimeException("Product id = " + id + " not found");
                 }
-                return productRowMapper.mapRow(resultSet);
+                return ProductRowMapper.mapRow(resultSet);
             }
         }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Get product error " + e.getMessage());
-//        }
     }
 
-    @SneakyThrows
-    @Override
-    public Product get(String name) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_BY_NAME_QUERY)) {
-            preparedStatement.setString(1, name);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (!resultSet.next()) {
-                    throw new RuntimeException("Product " + name + " not found");
-                }
-                return productRowMapper.mapRow(resultSet);
-            }
-        }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Get product error " + e.getMessage());
-//        }
-    }
 
     @SneakyThrows
     @Override
@@ -100,11 +68,7 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setTimestamp(3, Timestamp.valueOf(product.getCreationDate()));
             preparedStatement.setString(4, product.getDescription());
             preparedStatement.executeUpdate();
-
         }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Add product error " + e.getMessage());
-//        }
     }
 
     @SneakyThrows
@@ -114,11 +78,7 @@ public class JdbcProductDao implements ProductDao {
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_PRODUCT_QUERY)) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
-
         }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Remove product id = " + id + " error " + e.getMessage());
-//        }
     }
 
     @SneakyThrows
@@ -132,11 +92,7 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setString(4, product.getDescription());
             preparedStatement.setLong(5, product.getId());
             preparedStatement.executeUpdate();
-
         }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Update product error " + e.getMessage());
-//        }
     }
 
     @SneakyThrows
@@ -149,14 +105,11 @@ public class JdbcProductDao implements ProductDao {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 List<Product> productList = new ArrayList<>();
                 while (resultSet.next()) {
-                    productList.add(productRowMapper.mapRow(resultSet));
+                    productList.add(ProductRowMapper.mapRow(resultSet));
                 }
                 return productList;
             }
         }
-//        catch (SQLException e) {
-//            throw new RuntimeException("Search products error " + e);
-//        }
     }
 
 }

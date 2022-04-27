@@ -13,19 +13,16 @@ import java.io.IOException;
 @Slf4j
 public class DeleteProductServlet extends HttpServlet {
     private final ProductService productService = ServiceLocator.getService(ProductService.class);
-//    private final ProductService productService;
-//    public DeleteProductServlet(ProductService productService) {
-//        this.productService = productService;
-//    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             productService.remove(Integer.parseInt(req.getParameter("id")));
         } catch (Exception e) {
-            log.error("Delete product error", e);
+            log.info("Delete product error", e);
             resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
         }
-        resp.sendRedirect("/");
+        resp.sendRedirect(req.getHeader("referer"));
     }
 }

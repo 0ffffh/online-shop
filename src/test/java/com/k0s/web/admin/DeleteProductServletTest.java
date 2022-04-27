@@ -1,6 +1,6 @@
 package com.k0s.web.admin;
 
-import com.k0s.dao.Dao;
+
 import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.ConnectionFactory;
 import com.k0s.dao.jdbc.JdbcProductDao;
@@ -50,8 +50,8 @@ class DeleteProductServletTest {
         connectionFactory = new ConnectionFactory(properties);
         jdbcProductDao = new JdbcProductDao(connectionFactory);
         productService = new ProductService(jdbcProductDao);
-        deleteProductServlet = new DeleteProductServlet(productService);
-        addProductServlet = new AddProductServlet(productService);
+        deleteProductServlet = new DeleteProductServlet();
+        addProductServlet = new AddProductServlet();
 
 
         servletRequest = mock(HttpServletRequest.class);

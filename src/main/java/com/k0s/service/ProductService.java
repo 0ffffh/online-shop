@@ -41,4 +41,11 @@ public class ProductService  {
     public void addToCart(List<Product> cart, long productId) {
         cart.add(productDao.get(productId));
     }
+    public void removeFromCart(List<Product> cart, int index) {
+        cart.remove(index);
+    }
+
+    public void clearCart(List<Product> cart) {
+        cart.clear();
+    }
 }
