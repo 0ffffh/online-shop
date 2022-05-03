@@ -27,14 +27,15 @@ public class SecurityService {
                 Long.parseLong(properties.getProperty("session.clearDelay")));
     }
 
-    public String login(String name, String password) {
+
+    public Session login(String name, String password) {
         Session session = sessionService.getSession(name, password);
         if (session == null) {
             return null;
         }
 
         sessionList.add(session);
-        return session.getToken();
+        return session;
     }
 
     public Session getSession(String token) {

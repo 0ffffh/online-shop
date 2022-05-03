@@ -1,6 +1,7 @@
 package com.k0s.web;
 
 import com.k0s.security.SecurityService;
+import com.k0s.security.Session;
 import com.k0s.service.ServiceLocator;
 import com.k0s.web.util.PageGenerator;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Slf4j
 public class LoginServlet extends HttpServlet {
     private final static String LOGIN_HTML_PAGE = "login.html";
@@ -26,11 +30,14 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("name");
         String password = req.getParameter("password");
 
-        String token = securityService.login(username, password);
-        if (token != null) {
-            log.info("User <{}> authorized, token = {}", username, token);
-            Cookie cookie = new Cookie("user-token", token);
-            cookie.setMaxAge(securityService.getSessionMaxAge());
+        Session session = securityService.login(username, password);
+        if (session != null) {
+            log.info("User <{}> authorized, token = {}", username, session.getToken());
+            Cookie cookie = new Cookie("user-token", session.getToken());
+
+            int expiry = (int) (session.getExpireDate().atZone(ZoneId.systemDefault()).toEpochSecond()
+                    - LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
+            cookie.setMaxAge(expiry);
             resp.addCookie(cookie);
             resp.sendRedirect("/");
         } else {
