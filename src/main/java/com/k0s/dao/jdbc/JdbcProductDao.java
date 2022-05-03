@@ -4,12 +4,11 @@ import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.mapper.ProductRowMapper;
 import com.k0s.entity.Product;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,94 +21,51 @@ public class JdbcProductDao implements ProductDao {
     private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name = ?, price = ?, creation_date = ?, description = ?  WHERE id = ?;";
     private static final String SEARCH_PRODUCT_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)";
 
-    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
     public JdbcProductDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+
     }
 
-    @SneakyThrows
+
     @Override
     public List<Product> getAll() {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_QUERY);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            List<Product> productList = new ArrayList<>();
-            while (resultSet.next()) {
-                productList.add(ProductRowMapper.mapRow(resultSet));
-            }
-            return productList;
-        }
+        return jdbcTemplate.query(GET_ALL_QUERY, new ProductRowMapper());
     }
 
-    @SneakyThrows
+
     @Override
     public Product get(long id) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_BY_ID_QUERY)) {
-            preparedStatement.setLong(1, id);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (!resultSet.next()) {
-                    throw new RuntimeException("Product id = " + id + " not found");
-                }
-                return ProductRowMapper.mapRow(resultSet);
-            }
-        }
+        return jdbcTemplate.queryForObject(GET_PRODUCT_BY_ID_QUERY, new ProductRowMapper(), id);
     }
 
 
-    @SneakyThrows
+
     @Override
     public void add(@NonNull Product product) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(ADD_PRODUCT_QUERY)) {
-            preparedStatement.setString(1, product.getName());
-            preparedStatement.setDouble(2, product.getPrice());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(product.getCreationDate()));
-            preparedStatement.setString(4, product.getDescription());
-            preparedStatement.executeUpdate();
-        }
+        jdbcTemplate.update(ADD_PRODUCT_QUERY, product.getName(), product.getPrice(),
+                Timestamp.valueOf(product.getCreationDate()), product.getDescription());
     }
 
-    @SneakyThrows
+
     @Override
     public void remove(long id) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_PRODUCT_QUERY)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
-        }
+        jdbcTemplate.update(REMOVE_PRODUCT_QUERY, id);
     }
 
-    @SneakyThrows
+
     @Override
     public void update(@NonNull Product product) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PRODUCT_QUERY)) {
-            preparedStatement.setString(1, product.getName());
-            preparedStatement.setDouble(2, product.getPrice());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(product.getCreationDate()));
-            preparedStatement.setString(4, product.getDescription());
-            preparedStatement.setLong(5, product.getId());
-            preparedStatement.executeUpdate();
-        }
+        jdbcTemplate.update(UPDATE_PRODUCT_QUERY, product.getName(), product.getPrice(),
+                Timestamp.valueOf(product.getCreationDate()),  product.getDescription(), product.getId());
     }
 
-    @SneakyThrows
+
     @Override
     public List<Product> search(String value) {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(SEARCH_PRODUCT_QUERY)) {
-            preparedStatement.setString(1, "%" + value + "%");
-            preparedStatement.setString(2, "%" + value + "%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<Product> productList = new ArrayList<>();
-                while (resultSet.next()) {
-                    productList.add(ProductRowMapper.mapRow(resultSet));
-                }
-                return productList;
-            }
-        }
+        String search = "%" + value + "%";
+        return jdbcTemplate.query(SEARCH_PRODUCT_QUERY, new ProductRowMapper(), search, search);
     }
 
 }

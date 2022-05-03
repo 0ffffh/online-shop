@@ -43,12 +43,18 @@ public class AddProductServlet extends HttpServlet {
             resp.sendRedirect(req.getHeader("referer"));
         } else {
             try {
-                productService.add(Product.builder()
-                        .name(req.getParameter("name"))
-                        .price(Double.parseDouble(req.getParameter("price")))
-                        .creationDate(LocalDateTime.now())
-                        .description(req.getParameter("description"))
-                        .build());
+                Product product = new Product();
+                product.setName(req.getParameter("name"));
+                product.setPrice(Double.parseDouble(req.getParameter("price")));
+                product.setCreationDate(LocalDateTime.now());
+                product.setDescription(req.getParameter("description"));
+                productService.add(product);
+//                productService.add(Product.builder()
+//                        .name(req.getParameter("name"))
+//                        .price(Double.parseDouble(req.getParameter("price")))
+//                        .creationDate(LocalDateTime.now())
+//                        .description(req.getParameter("description"))
+//                        .build());
             } catch (Exception e) {
                 log.info("Add product error ",e);
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST);

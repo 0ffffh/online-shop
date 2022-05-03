@@ -19,6 +19,7 @@ public class SessionService {
 
     public Session getSession(String name, String password) {
         User user = userService.getUser(name);
+        System.out.println(user);
         if(user == null){
             return null;
         }

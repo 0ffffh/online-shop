@@ -47,14 +47,21 @@ public class EditProductServlet extends HttpServlet {
             resp.sendRedirect(req.getHeader("referer"));
         } else {
             try {
-                productService.update(
-                        Product.builder()
-                                .id(Long.parseLong(req.getParameter("id")))
-                                .name(req.getParameter("name"))
-                                .price(Double.parseDouble(req.getParameter("price")))
-                                .creationDate(LocalDateTime.now())
-                                .description(req.getParameter("description"))
-                                .build());
+                Product product = new Product();
+                product.setId(Long.parseLong(req.getParameter("id")));
+                product.setName(req.getParameter("name"));
+                product.setPrice(Double.parseDouble(req.getParameter("price")));
+                product.setCreationDate(LocalDateTime.now());
+                product.setDescription(req.getParameter("description"));
+                productService.update(product);
+//                productService.update(
+//                        Product.builder()
+//                                .id(Long.parseLong(req.getParameter("id")))
+//                                .name(req.getParameter("name"))
+//                                .price(Double.parseDouble(req.getParameter("price")))
+//                                .creationDate(LocalDateTime.now())
+//                                .description(req.getParameter("description"))
+//                                .build());
             } catch (Exception e) {
                 log.info("Edit product error ", e);
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

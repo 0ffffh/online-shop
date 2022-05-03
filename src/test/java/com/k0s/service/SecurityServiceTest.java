@@ -58,15 +58,15 @@ class SecurityServiceTest {
 
     }
 
-    @Test
-    @DisplayName("login() test")
-    void login() {
-        assertNotNull(securityService.login("user", "user"));
-        assertNull(securityService.login("notRegisteredUser", "user"));
-        assertNull(securityService.login(null, "user"));
-//        assertNull(securityService.login("user", null));
-
-    }
+//    @Test
+//    @DisplayName("login() test")
+//    void login() {
+//        assertNotNull(securityService.login("user", "user"));
+//        assertNull(securityService.login("notRegisteredUser", "user"));
+//        assertNull(securityService.login(null, "user"));
+////        assertNull(securityService.login("user", null));
+//
+//    }
 
     @Test
     void getSession() {

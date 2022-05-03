@@ -16,12 +16,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <logback.version>1.2.11</logback.version>
-        <org.projectlombok.version>1.18.22</org.projectlombok.version>
-        <org.postgresql.version>42.3.3</org.postgresql.version>
+        <projectlombok.version>1.18.22</projectlombok.version>
+        <postgresql.version>42.3.3</postgresql.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
-        <org.mockito.version>4.4.0</org.mockito.version>
-        <org.flywaydb.version>8.5.0</org.flywaydb.version>
-        <org.eclipse.jetty>11.0.7</org.eclipse.jetty>
+        <mockito.version>4.4.0</mockito.version>
+        <flywaydb.version>8.5.0</flywaydb.version>
+        <eclipse.jetty>11.0.7</eclipse.jetty>
+        <spring.version>5.3.19</spring.version>
     </properties>
 
     <build>
@@ -90,7 +91,7 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>${org.flywaydb.version}</version>
+                <version>${flywaydb.version}</version>
                 <configuration>
                     <configFiles>
                         <configFile>flyway.conf</configFile>
@@ -107,6 +108,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
@@ -121,21 +129,21 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${org.projectlombok.version}</version>
+            <version>${projectlombok.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${org.postgresql.version}</version>
+            <version>${postgresql.version}</version>
             <scope>runtime</scope>
         </dependency>
 
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>${org.flywaydb.version}</version>
+            <version>${flywaydb.version}</version>
         </dependency>
 
         <dependency>
@@ -175,21 +183,21 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${org.mockito.version}</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>${org.mockito.version}</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>${org.mockito.version}</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
