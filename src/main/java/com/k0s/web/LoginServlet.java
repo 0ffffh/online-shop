@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Slf4j
 public class LoginServlet extends HttpServlet {
@@ -30,16 +31,20 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("name");
         String password = req.getParameter("password");
 
-        Session session = securityService.login(username, password);
-        if (session != null) {
-            log.info("User <{}> authorized, token = {}", username, session.getToken());
-            Cookie cookie = new Cookie("user-token", session.getToken());
+        Optional<Session> session = Optional.ofNullable(securityService.login(username, password));
 
-            int expiry = (int) (session.getExpireDate().atZone(ZoneId.systemDefault()).toEpochSecond()
+        if(session.isPresent()){
+
+            log.info("User <{}> authorized, token = {}", username, session.get().getToken());
+            Cookie cookie = new Cookie("user-token", session.get().getToken());
+
+            int expiry = (int) (session.get().getExpireDate().atZone(ZoneId.systemDefault()).toEpochSecond()
                     - LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond());
+
             cookie.setMaxAge(expiry);
             resp.addCookie(cookie);
             resp.sendRedirect("/");
+
         } else {
             log.info("User <{}> not authorized", username);
             resp.sendRedirect(req.getHeader("referer"));

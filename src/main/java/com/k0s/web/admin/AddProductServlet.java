@@ -28,7 +28,6 @@ public class AddProductServlet extends HttpServlet {
             pageVariables.put("products", productService.getAll());
 
             resp.setStatus(HttpServletResponse.SC_OK);
-//            resp.setContentType("text/html;charset=utf-8");
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
         } catch (Exception e) {
             log.info("Add product page servlet error: ", e);
@@ -39,7 +38,6 @@ public class AddProductServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!isValidRequest(req)) {
-//            doGet(req, resp);
             resp.sendRedirect(req.getHeader("referer"));
         } else {
             try {
@@ -49,15 +47,9 @@ public class AddProductServlet extends HttpServlet {
                 product.setCreationDate(LocalDateTime.now());
                 product.setDescription(req.getParameter("description"));
                 productService.add(product);
-//                productService.add(Product.builder()
-//                        .name(req.getParameter("name"))
-//                        .price(Double.parseDouble(req.getParameter("price")))
-//                        .creationDate(LocalDateTime.now())
-//                        .description(req.getParameter("description"))
-//                        .build());
             } catch (Exception e) {
                 log.info("Add product error ",e);
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
             resp.sendRedirect(req.getHeader("referer"));
         }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -29,20 +30,20 @@ public class SecurityService {
 
 
     public Session login(String name, String password) {
-        Session session = sessionService.getSession(name, password);
-        if (session == null) {
-            return null;
+        Optional<Session> optionalSession = Optional.ofNullable(sessionService.getSession(name, password));
+        if(optionalSession.isPresent()){
+            sessionList.add(optionalSession.get());
+            return optionalSession.get();
         }
-
-        sessionList.add(session);
-        return session;
+        return null;
     }
 
     public Session getSession(String token) {
-        Session session = sessionList.stream().filter(e -> token.equals(e.getToken())).findFirst().orElse(null);
-
-        if (isValidSession(session)) {
-            return session;
+        Optional<Session> optionalSession = sessionList.stream().filter(e -> token.equals(e.getToken())).findFirst();
+        if (optionalSession.isPresent()){
+            if (!removeIfInvalidSession(optionalSession.get())){
+                return optionalSession.get();
+            }
         }
         return null;
     }
@@ -55,30 +56,26 @@ public class SecurityService {
         return Arrays.asList(properties.getProperty("security.skipPath").split(","));
     }
 
-    public int getSessionMaxAge() {
-        return Integer.parseInt(properties.getProperty("security.sessionTimeout"));
-    }
-
-    private boolean isValidSession(Session session) {
-        if (session == null) {
-            return false;
-        }
-        if (LocalDateTime.now().isBefore(session.getExpireDate())) {
-            return true;
-        }
-        sessionList.remove(session);
-        return false;
-    }
-
     private void scheduleClearSessionList(long delay, long period) {
         schedule.scheduleAtFixedRate(this::clearSessionList, delay, period, TimeUnit.MINUTES);
     }
 
     private void clearSessionList() {
         log.info("Clearing session list");
-        int countSessions = sessionList.size();
-        sessionList.removeIf(e -> LocalDateTime.now().isAfter(e.getExpireDate()));
-        log.info("Deleted {} inactive sessions", countSessions - sessionList.size());
+        for (Session session : sessionList) {
+            if(removeIfInvalidSession(session)){
+                log.info("Removed inactive {}  session. User <{}> expire date {}",
+                        session.getUser().getRole(), session.getUser().getName(), session.getExpireDate().toString());
+            }
+        }
+//        sessionList.removeIf(e -> LocalDateTime.now().isAfter(e.getExpireDate()));
+    }
+
+    private boolean removeIfInvalidSession(Session session){
+        if(session.getExpireDate().isBefore(LocalDateTime.now())){
+            return sessionList.remove(session);
+        }
+        return false;
     }
 
 }

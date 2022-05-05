@@ -7,27 +7,19 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.io.PrintWriter;
 import java.net.URI;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 @Slf4j
-public class ConnectionFactory implements DataSource {
+public class DataSourceFactory {
     private static final String DATABASE_FLAG = "local";
-    private final HikariDataSource dataSource;
 
-    public ConnectionFactory(Properties properties) {
-        dataSource = new HikariDataSource(getConfig(properties));
+    public DataSource createDataSource(Properties properties){
+        return new HikariDataSource(getConfig(properties));
     }
 
-    @Override
-    @SneakyThrows
-    public Connection getConnection() {
-        return dataSource.getConnection();
+    public DataSource createDataSource(String dbUrl, String username, String password){
+        return new HikariDataSource(setConfig(dbUrl, username, password));
     }
 
     @SneakyThrows
@@ -60,44 +52,4 @@ public class ConnectionFactory implements DataSource {
         return config;
     }
 
-
-    @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public PrintWriter getLogWriter() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
-
-    }
-
-    @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
-
-    }
-
-    @Override
-    public int getLoginTimeout() throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return null;
-    }
-
-    @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
-    }
 }

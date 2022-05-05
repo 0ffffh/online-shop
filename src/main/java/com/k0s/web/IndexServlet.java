@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class IndexServlet extends HttpServlet {
@@ -24,13 +25,14 @@ public class IndexServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try{
             Map<String, Object> pageVariables = new HashMap<>();
+            Optional<Session> session = Optional.ofNullable((Session)req.getAttribute("session"));
+            if(session.isPresent()){
+                pageVariables.put("role", session.get().getUser().getRole());
+            } else {
+                pageVariables.put("role", Role.GUEST);
+            }
 
-            Session session = (Session) req.getAttribute("session");
-
-            pageVariables.put("role", session == null ? Role.GUEST : session.getUser().getRole());
             pageVariables.put("products", productService.getAll());
-
-            resp.setContentType("text/html;charset=utf-8");
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
 

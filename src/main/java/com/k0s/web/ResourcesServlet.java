@@ -14,7 +14,8 @@ public class ResourcesServlet extends HttpServlet {
     @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try(BufferedInputStream bufferedInputStream = new BufferedInputStream(ClasspathFileReader.getInputStream(req.getPathInfo()))){
+        try(BufferedInputStream bufferedInputStream =
+                    new BufferedInputStream(ClasspathFileReader.getInputStream(req.getPathInfo()))){
 
             resp.setContentType(getServletContext().getMimeType(req.getRequestURI()));
             resp.setStatus(HttpServletResponse.SC_OK);

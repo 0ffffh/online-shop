@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class EditProductServlet extends HttpServlet {
@@ -22,27 +23,26 @@ public class EditProductServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        try {
-            Product product = productService.get(Long.parseLong(req.getParameter("id")));
-            Map<String, Object> pageVariables = new HashMap<>();
-            pageVariables.put("id", product.getId());
-            pageVariables.put("name", product.getName());
-            pageVariables.put("price", product.getPrice());
-            pageVariables.put("creation_date", product.getCreationDate());
-            pageVariables.put("description", product.getDescription());
+            Optional<Product> optionalProduct = Optional.ofNullable(productService.get(Long.parseLong(req.getParameter("id"))));
+            if(optionalProduct.isPresent()){
+                Product product = optionalProduct.get();
+                Map<String, Object> pageVariables = new HashMap<>();
+                pageVariables.put("id", product.getId());
+                pageVariables.put("name", product.getName());
+                pageVariables.put("price", product.getPrice());
+                pageVariables.put("creation_date", product.getCreationDate());
+                pageVariables.put("description", product.getDescription());
 
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
-
-        } catch (Exception e) {
-            log.info("Edit product servlet ", e);
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-        }
-
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.getWriter().println(PageGenerator.getInstance().getPage(HTML_PAGE, pageVariables));
+            } else {
+                log.info("Edit product servlet: product id=" + req.getParameter("id") + " not found");
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (!isValidRequest(req)) {
             resp.sendRedirect(req.getHeader("referer"));
         } else {
@@ -54,14 +54,6 @@ public class EditProductServlet extends HttpServlet {
                 product.setCreationDate(LocalDateTime.now());
                 product.setDescription(req.getParameter("description"));
                 productService.update(product);
-//                productService.update(
-//                        Product.builder()
-//                                .id(Long.parseLong(req.getParameter("id")))
-//                                .name(req.getParameter("name"))
-//                                .price(Double.parseDouble(req.getParameter("price")))
-//                                .creationDate(LocalDateTime.now())
-//                                .description(req.getParameter("description"))
-//                                .build());
             } catch (Exception e) {
                 log.info("Edit product error ", e);
                 resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

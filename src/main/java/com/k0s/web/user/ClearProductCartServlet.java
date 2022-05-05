@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 public class ClearProductCartServlet extends HttpServlet {
@@ -18,8 +19,9 @@ public class ClearProductCartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Session session = (Session) req.getAttribute("session");
-        productService.clearCart(session.getCart());
+        Optional<Session> session = Optional.ofNullable((Session)req.getAttribute("session"));
+
+        session.ifPresent( value -> productService.clearCart(value.getCart()));
 
         resp.sendRedirect(req.getHeader("referer"));
 

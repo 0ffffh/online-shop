@@ -5,6 +5,7 @@ import com.k0s.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -18,18 +19,21 @@ public class SessionService {
     }
 
     public Session getSession(String name, String password) {
-        User user = userService.getUser(name);
-        System.out.println(user);
-        if(user == null){
-            return null;
+        Optional<User> user = Optional.ofNullable(userService.getUser(name));
+        if (user.isPresent()){
+            Optional<String> token = Optional.ofNullable(
+                    getToken(user.get().getPassword(), password, user.get().getSalt()));
+            if (token.isPresent()){
+                Session session = new Session();
+                session.setUser(user.get());
+                session.setToken(token.get());
+                session.setExpireDate(LocalDateTime.now().plusSeconds(
+                        Long.parseLong(properties.getProperty("security.sessionTimeout"))));
+                session.setCart(new ArrayList<>());
+                return session;
+            }
         }
-        String token = getToken(user.getPassword(), password, user.getSalt());
-        return token == null ? null : Session.builder()
-                .token(token)
-                .user(user)
-                .expireDate(LocalDateTime.now().plusSeconds(Long.parseLong(properties.getProperty("security.sessionTimeout"))))
-                .cart(new ArrayList<>())
-                .build();
+        return null;
     }
 
 

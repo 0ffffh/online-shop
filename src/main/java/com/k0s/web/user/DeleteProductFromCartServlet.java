@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class DeleteProductFromCartServlet extends HttpServlet {
@@ -20,11 +21,11 @@ public class DeleteProductFromCartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Session session = (Session) req.getAttribute("session");
+        Optional<Session> session = Optional.ofNullable((Session)req.getAttribute("session"));
+
         int index = Integer.parseInt(req.getParameter("id"));
-        List<Product> productList= session.getCart();
-        System.out.println(productList.toString());
-        productService.removeFromCart(session.getCart(), index);
+        session.ifPresent( value -> productService.removeFromCart(value.getCart(), index));
+
         resp.sendRedirect(req.getHeader("referer"));
 
     }

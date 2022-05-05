@@ -4,7 +4,6 @@ package com.k0s.entity;
 import lombok.*;
 
 import java.time.LocalDateTime;
-//@Builder
 @NoArgsConstructor
 @Setter
 @Getter

@@ -25,22 +25,21 @@ public class JdbcProductDao implements ProductDao {
 
     public JdbcProductDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-
     }
-
 
     @Override
     public List<Product> getAll() {
         return jdbcTemplate.query(GET_ALL_QUERY, new ProductRowMapper());
     }
 
-
     @Override
     public Product get(long id) {
-        return jdbcTemplate.queryForObject(GET_PRODUCT_BY_ID_QUERY, new ProductRowMapper(), id);
+        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_ID_QUERY, new ProductRowMapper(), id);
+        if(productList.isEmpty()){
+            return null;
+        }
+        return productList.stream().findFirst().get();
     }
-
-
 
     @Override
     public void add(@NonNull Product product) {
@@ -48,19 +47,16 @@ public class JdbcProductDao implements ProductDao {
                 Timestamp.valueOf(product.getCreationDate()), product.getDescription());
     }
 
-
     @Override
     public void remove(long id) {
         jdbcTemplate.update(REMOVE_PRODUCT_QUERY, id);
     }
-
 
     @Override
     public void update(@NonNull Product product) {
         jdbcTemplate.update(UPDATE_PRODUCT_QUERY, product.getName(), product.getPrice(),
                 Timestamp.valueOf(product.getCreationDate()),  product.getDescription(), product.getId());
     }
-
 
     @Override
     public List<Product> search(String value) {

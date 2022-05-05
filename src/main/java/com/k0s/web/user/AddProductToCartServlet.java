@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 public class AddProductToCartServlet extends HttpServlet {
@@ -18,12 +19,12 @@ public class AddProductToCartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            Session session = (Session) req.getAttribute("session");
+            Optional<Session> session = Optional.ofNullable((Session)req.getAttribute("session"));
             long productId = Long.parseLong(req.getParameter("id"));
-            productService.addToCart(session.getCart(), productId);
+            session.ifPresent(value -> productService.addToCart(value.getCart(), productId));
         } catch (Exception e) {
             log.info(e.getMessage());
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
         }
         resp.sendRedirect(req.getHeader("referer"));
     }

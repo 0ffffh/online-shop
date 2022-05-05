@@ -1,12 +1,12 @@
 package com.k0s.web;
 
-import com.k0s.security.Session;
 import com.k0s.security.SecurityService;
 import com.k0s.service.ServiceLocator;
 import jakarta.servlet.http.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+
 @Slf4j
 public class LogoutServlet extends HttpServlet {
     private static final String USER_TOKEN = "user-token";
@@ -18,11 +18,7 @@ public class LogoutServlet extends HttpServlet {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (USER_TOKEN.equals(cookie.getName())) {
-                    Session session = securityService.getSession(cookie.getValue());
-                    if (session != null){
-                        securityService.logout(cookie.getValue());
-                        log.info("User <{}> logout", session.getUser().getName());
-                    }
+                    securityService.logout(cookie.getValue());
                 }
                 cookie.setValue(null);
                 cookie.setMaxAge(0);

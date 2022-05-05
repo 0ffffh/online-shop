@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class AuthFilter implements Filter {
@@ -41,23 +42,24 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        Session session = null;
+        Optional<Session> session = Optional.empty();
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (USER_TOKEN.equals(cookie.getName())) {
-                    session = securityService.getSession(cookie.getValue());
+                    session = Optional.ofNullable(securityService.getSession(cookie.getValue()));
                     break;
                 }
             }
         }
-        req.setAttribute(SESSION_ATT, session);
+        req.setAttribute(SESSION_ATT, session.orElse(null));
         resp.setContentType("text/html;charset=utf-8");
-
         for (Role role : Role.values()) {
             if (requestPath.contains(role.getRole())) {
-                if (isAllow(session, role)) {
-                    filterChain.doFilter(servletRequest, servletResponse);
+                if(session.isPresent()){
+                    if(role.equals(session.get().getUser().getRole())){
+                        filterChain.doFilter(servletRequest, servletResponse);
+                    }
                 } else {
                     log.info("Not authorized {} try connect to {}", req.getRemoteAddr(), req.getRequestURL());
                     resp.sendError(HttpServletResponse.SC_FORBIDDEN);
@@ -70,14 +72,4 @@ public class AuthFilter implements Filter {
 
     }
 
-    private boolean isAllow(Session session, Role role) {
-        if (session == null) {
-            return false;
-        }
-        return role.equals(session.getUser().getRole());
-    }
-
-    @Override
-    public void destroy() {
-    }
 }
