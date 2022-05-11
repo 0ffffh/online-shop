@@ -16,6 +16,7 @@ public class JdbcProductDao implements ProductDao {
 
     private static final String GET_ALL_QUERY = "SELECT id, name, price, creation_date, description FROM products";
     private static final String GET_PRODUCT_BY_ID_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE id = ?";
+    private static final String GET_PRODUCT_BY_NAME_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE name = ?";
     private static final String ADD_PRODUCT_QUERY = "INSERT INTO products (name, price, creation_date, description) values (?, ?, ?, ?);";
     private static final String REMOVE_PRODUCT_QUERY = "DELETE FROM products WHERE id = ?;";
     private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name = ?, price = ?, creation_date = ?, description = ?  WHERE id = ?;";
@@ -35,6 +36,15 @@ public class JdbcProductDao implements ProductDao {
     @Override
     public Product get(long id) {
         List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_ID_QUERY, new ProductRowMapper(), id);
+        if(productList.isEmpty()){
+            return null;
+        }
+        return productList.stream().findFirst().get();
+    }
+
+    @Override
+    public Product get(String name) {
+        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_NAME_QUERY, new ProductRowMapper(), name);
         if(productList.isEmpty()){
             return null;
         }

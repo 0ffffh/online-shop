@@ -10,6 +10,8 @@ public interface ProductDao {
 
     Product get(long id);
 
+    Product get(String name);
+
     void add(Product product);
 
     void remove(long id);

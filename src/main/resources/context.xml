@@ -1,0 +1,6 @@
+<!-- SAX Parser -->
+<beans>
+    <bean id="propertiesReader" class="com.k0s.util.PropertiesReader"/>
+
+    <bean id="dataSourceFactory" class="com.k0s.dao.jdbc.DataSourceFactory"/>
+</beans>

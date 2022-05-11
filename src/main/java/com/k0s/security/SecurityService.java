@@ -31,7 +31,7 @@ public class SecurityService {
 
     public Session login(String name, String password) {
         Optional<Session> optionalSession = Optional.ofNullable(sessionService.getSession(name, password));
-        if(optionalSession.isPresent()){
+        if (optionalSession.isPresent()) {
             sessionList.add(optionalSession.get());
             return optionalSession.get();
         }
@@ -40,8 +40,8 @@ public class SecurityService {
 
     public Session getSession(String token) {
         Optional<Session> optionalSession = sessionList.stream().filter(e -> token.equals(e.getToken())).findFirst();
-        if (optionalSession.isPresent()){
-            if (!removeIfInvalidSession(optionalSession.get())){
+        if (optionalSession.isPresent()) {
+            if (!removeIfInvalidSession(optionalSession.get())) {
                 return optionalSession.get();
             }
         }
@@ -63,7 +63,7 @@ public class SecurityService {
     private void clearSessionList() {
         log.info("Clearing session list");
         for (Session session : sessionList) {
-            if(removeIfInvalidSession(session)){
+            if (removeIfInvalidSession(session)) {
                 log.info("Removed inactive {}  session. User <{}> expire date {}",
                         session.getUser().getRole(), session.getUser().getName(), session.getExpireDate().toString());
             }
@@ -71,8 +71,8 @@ public class SecurityService {
 //        sessionList.removeIf(e -> LocalDateTime.now().isAfter(e.getExpireDate()));
     }
 
-    private boolean removeIfInvalidSession(Session session){
-        if(session.getExpireDate().isBefore(LocalDateTime.now())){
+    private boolean removeIfInvalidSession(Session session) {
+        if (session.getExpireDate().isBefore(LocalDateTime.now())) {
             return sessionList.remove(session);
         }
         return false;
