@@ -1,4 +1,4 @@
-package com.k0s.service;
+package com.k0s.web.config;
 
 import com.k0s.dao.ProductDao;
 import com.k0s.dao.UserDao;
@@ -7,20 +7,28 @@ import com.k0s.dao.jdbc.JdbcProductDao;
 import com.k0s.dao.jdbc.JdbcUserDao;
 import com.k0s.security.SecurityService;
 import com.k0s.security.SessionService;
+import com.k0s.service.ProductService;
+import com.k0s.service.UserService;
 import com.k0s.util.PropertiesReader;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class ServiceLocator {
-    private static final Map<Class<?>, Object> SERVICES = new ConcurrentHashMap<>();
-    private static final String DEFAULT_APP_PROPERTIES = "application.properties";
+@Slf4j
+public class ConfigListener implements ServletContextListener {
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
 
+        log.info("Init application context");
 
-    static {
-        PropertiesReader propertiesReader = new PropertiesReader(DEFAULT_APP_PROPERTIES);
+        ServletContext servletContext = sce.getServletContext();
+        String appPropertiesPath = servletContext.getInitParameter("properties");
+
+        PropertiesReader propertiesReader = new PropertiesReader(appPropertiesPath);
         Properties properties = propertiesReader.getProperties();
 
         DataSourceFactory dataSourceFactory = new DataSourceFactory();
@@ -37,14 +45,14 @@ public class ServiceLocator {
 
         SecurityService securityService = new SecurityService(sessionService, properties);
 
-        addService(ProductService.class, productService);
-        addService(SecurityService.class, securityService);
+        servletContext.setAttribute("userService", userService);
+        servletContext.setAttribute("productService", productService);
+        servletContext.setAttribute("securityService", securityService);
+
     }
 
-    public static <T> T getService(Class<T> serviceClass){
-        return serviceClass.cast(SERVICES.get(serviceClass));
-    }
-    public static void addService(Class<?> serviceClass, Object service){
-        SERVICES.put(serviceClass, service);
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        log.info("Destroy application context");
     }
 }

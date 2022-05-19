@@ -2,7 +2,7 @@ package com.k0s.web.user;
 
 import com.k0s.security.Session;
 import com.k0s.service.ProductService;
-import com.k0s.service.ServiceLocator;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +14,14 @@ import java.util.Optional;
 
 @Slf4j
 public class AddProductToCartServlet extends HttpServlet {
-    private final ProductService productService = ServiceLocator.getService(ProductService.class);
 
+    private ProductService productService;
+
+    @Override
+    public void init() throws ServletException {
+        ServletContext servletContext = getServletContext();
+        productService = (ProductService) servletContext.getAttribute("productService");
+    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {

@@ -2,8 +2,8 @@ package com.k0s.web;
 
 import com.k0s.security.SecurityService;
 import com.k0s.security.Session;
-import com.k0s.service.ServiceLocator;
 import com.k0s.web.util.PageGenerator;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -19,8 +19,14 @@ import java.util.Optional;
 @Slf4j
 public class LoginServlet extends HttpServlet {
     private final static String LOGIN_HTML_PAGE = "login.html";
-    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
 
+    private SecurityService securityService;
+
+    @Override
+    public void init() throws ServletException {
+        ServletContext servletContext = getServletContext();
+        securityService = (SecurityService) servletContext.getAttribute("securityService");
+    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.getWriter().println(PageGenerator.getInstance().getPage(LOGIN_HTML_PAGE, null));

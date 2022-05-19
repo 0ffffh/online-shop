@@ -1,7 +1,8 @@
 package com.k0s.web;
 
 import com.k0s.security.SecurityService;
-import com.k0s.service.ServiceLocator;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,7 +11,14 @@ import java.io.IOException;
 @Slf4j
 public class LogoutServlet extends HttpServlet {
     private static final String USER_TOKEN = "user-token";
-    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
+
+    private SecurityService securityService;
+
+    @Override
+    public void init() throws ServletException {
+        ServletContext servletContext = getServletContext();
+        securityService = (SecurityService) servletContext.getAttribute("securityService");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

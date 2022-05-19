@@ -2,8 +2,8 @@ package com.k0s.web.admin;
 
 import com.k0s.entity.Product;
 import com.k0s.service.ProductService;
-import com.k0s.service.ServiceLocator;
 import com.k0s.web.util.PageGenerator;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,8 +19,13 @@ import java.util.Optional;
 @Slf4j
 public class EditProductServlet extends HttpServlet {
     private static final String HTML_PAGE = "editProduct.html";
-    private final ProductService productService = ServiceLocator.getService(ProductService.class);
+    private ProductService productService;
 
+    @Override
+    public void init() throws ServletException {
+        ServletContext servletContext = getServletContext();
+        productService = (ProductService) servletContext.getAttribute("productService");
+    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
             Optional<Product> optionalProduct = Optional.ofNullable(productService.get(Long.parseLong(req.getParameter("id"))));

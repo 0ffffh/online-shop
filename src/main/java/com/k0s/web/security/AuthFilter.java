@@ -3,7 +3,6 @@ package com.k0s.web.security;
 import com.k0s.security.user.Role;
 import com.k0s.security.Session;
 import com.k0s.security.SecurityService;
-import com.k0s.service.ServiceLocator;
 import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,12 +19,15 @@ public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
     private static final String SESSION_ATT = "session";
     private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
-    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
+    private SecurityService securityService;
 
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         log.info("Authorization filter init");
+        ServletContext servletContext = filterConfig.getServletContext();
+        securityService = (SecurityService) servletContext.getAttribute("securityService");
+
         SKIP_AUTHORIZATION_PATH_LIST.addAll(securityService.getSkipList());
     }
 
