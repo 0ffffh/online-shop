@@ -1,36 +1,30 @@
-package com.k0s.web.security;
+package com.k0s.security;
 
 import com.k0s.security.user.Role;
-import com.k0s.security.Session;
-import com.k0s.security.SecurityService;
-import jakarta.servlet.*;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.servlet.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
+
+@Component("AuthFilter")
 public class AuthFilter implements Filter {
     private static final String USER_TOKEN = "user-token";
     private static final String SESSION_ATT = "session";
-    private static final List<String> SKIP_AUTHORIZATION_PATH_LIST = new ArrayList<>();
+
+    @Value("${security.skipPath}")
+    private String skipPaths;
+
+    @Autowired
     private SecurityService securityService;
-
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        log.info("Authorization filter init");
-        ServletContext servletContext = filterConfig.getServletContext();
-        securityService = (SecurityService) servletContext.getAttribute("securityService");
-
-        SKIP_AUTHORIZATION_PATH_LIST.addAll(securityService.getSkipList());
-    }
-
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -39,9 +33,11 @@ public class AuthFilter implements Filter {
 
         String requestPath = req.getServletPath();
 
-        if (SKIP_AUTHORIZATION_PATH_LIST.contains(requestPath)) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
+        for (String s : skipPaths.split(",")) {
+            if (requestPath.contains(s)) {
+                filterChain.doFilter(servletRequest, servletResponse);
+                return;
+            }
         }
 
         Optional<Session> session = Optional.empty();
@@ -58,8 +54,8 @@ public class AuthFilter implements Filter {
         resp.setContentType("text/html;charset=utf-8");
         for (Role role : Role.values()) {
             if (requestPath.contains(role.getRole())) {
-                if(session.isPresent()){
-                    if(role.equals(session.get().getUser().getRole())){
+                if (session.isPresent()) {
+                    if (role.equals(session.get().getUser().getRole())) {
                         filterChain.doFilter(servletRequest, servletResponse);
                     }
                 } else {

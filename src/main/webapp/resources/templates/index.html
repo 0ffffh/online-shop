@@ -112,7 +112,7 @@
 
         <#if role == "USER">
         <div class="st_column edit">
-            <a href="/user/product/add?id=${product.id}">
+            <a href="/user/product/add?id=${product.id?long?c}">
                 <button type="button" class="btn btn-dark"  type="submit">Add to cart</button>
             </a>
         </div>

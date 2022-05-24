@@ -2,15 +2,17 @@ package com.k0s.service;
 
 import com.k0s.dao.ProductDao;
 import com.k0s.entity.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-
+@Service
 public class ProductService  {
 
     private final ProductDao productDao;
 
-    public ProductService(ProductDao productDao) {
+    public ProductService(@Autowired ProductDao productDao) {
         this.productDao = productDao;
     }
 

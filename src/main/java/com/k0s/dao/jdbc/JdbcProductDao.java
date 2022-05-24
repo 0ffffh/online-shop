@@ -5,13 +5,16 @@ import com.k0s.dao.jdbc.mapper.ProductRowMapper;
 import com.k0s.entity.Product;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
 
 @Slf4j
+@Repository
 public class JdbcProductDao implements ProductDao {
 
     private static final String GET_ALL_QUERY = "SELECT id, name, price, creation_date, description FROM products";
@@ -24,18 +27,21 @@ public class JdbcProductDao implements ProductDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JdbcProductDao(DataSource dataSource) {
+    @Autowired
+    private ProductRowMapper productRowMapper;
+
+    public JdbcProductDao(@Autowired DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public List<Product> getAll() {
-        return jdbcTemplate.query(GET_ALL_QUERY, new ProductRowMapper());
+        return jdbcTemplate.query(GET_ALL_QUERY, productRowMapper);
     }
 
     @Override
     public Product get(long id) {
-        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_ID_QUERY, new ProductRowMapper(), id);
+        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_ID_QUERY, productRowMapper, id);
         if(productList.isEmpty()){
             return null;
         }
@@ -44,7 +50,7 @@ public class JdbcProductDao implements ProductDao {
 
     @Override
     public Product get(String name) {
-        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_NAME_QUERY, new ProductRowMapper(), name);
+        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_NAME_QUERY, productRowMapper, name);
         if(productList.isEmpty()){
             return null;
         }
@@ -71,7 +77,7 @@ public class JdbcProductDao implements ProductDao {
     @Override
     public List<Product> search(String value) {
         String search = "%" + value + "%";
-        return jdbcTemplate.query(SEARCH_PRODUCT_QUERY, new ProductRowMapper(), search, search);
+        return jdbcTemplate.query(SEARCH_PRODUCT_QUERY, productRowMapper, search, search);
     }
 
 }
