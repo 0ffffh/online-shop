@@ -1,7 +1,6 @@
 package com.k0s.controller;
 
 import com.k0s.entity.Product;
-import com.k0s.security.user.Role;
 import com.k0s.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -78,12 +77,12 @@ public class AdminController {
         return "redirect:/admin/product/edit";
     }
 
-    @PostMapping("/admin/product/delete")
+    @GetMapping("/admin/product/delete")
     public String deleteProductAdmin(@RequestParam Long id) {
 
         productService.remove(id);
 
-        return "redirect:/admin";
+        return "redirect:/";
     }
 
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SecurityService {
 
-    private UserService userService;
+    private final UserService userService;
 
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
     private final ScheduledExecutorService schedule = Executors.newScheduledThreadPool(1);
@@ -34,6 +34,9 @@ public class SecurityService {
 
     @Value("${session.clearDelay}")
     private String sessionClearDelay;
+
+    @Value("${security.skipPath}")
+    private String skipPaths;
 
 
     public SecurityService(@Autowired UserService userService) {
@@ -69,14 +72,15 @@ public class SecurityService {
         sessionList.removeIf(e -> token.equals(e.getToken()));
     }
 
+    public List<String> getSkipPathList() {
+        return Arrays.stream(skipPaths.split(",")).toList();
+    }
 
     private void clearSessionList() {
         log.info("Clearing session list");
-        System.out.println("Clearing session list");
         for (Session session : sessionList) {
             if (removeIfInvalidSession(session)) {
                 log.info("Removed inactive {}  session. User <{}> expire date {}", session.getUser().getRole(), session.getUser().getName(), session.getExpireDate().toString());
-                System.out.println("Removed inactive {}  session. User <{}> expire date {}" + session.getUser().getRole() + session.getUser().getName() + session.getExpireDate().toString());
             }
         }
 //        sessionList.removeIf(e -> LocalDateTime.now().isAfter(e.getExpireDate()));
@@ -115,6 +119,7 @@ public class SecurityService {
         }
         return null;
     }
+
 
 }
 
