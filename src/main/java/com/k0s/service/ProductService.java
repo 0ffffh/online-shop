@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService  {
 
     private final ProductDao productDao;
 
-    public ProductService(@Autowired ProductDao productDao) {
+    @Autowired
+    public ProductService( ProductDao productDao) {
         this.productDao = productDao;
     }
 
@@ -20,7 +22,7 @@ public class ProductService  {
         return productDao.getAll();
     }
 
-    public Product get(long id) {
+    public Optional<Product> get(long id) {
         return productDao.get(id);
     }
 
@@ -40,14 +42,4 @@ public class ProductService  {
         return productDao.search(value);
     }
 
-    public void addToCart(List<Product> cart, long productId) {
-        cart.add(productDao.get(productId));
-    }
-    public void removeFromCart(List<Product> cart, int index) {
-        cart.remove(index);
-    }
-
-    public void clearCart(List<Product> cart) {
-        cart.clear();
-    }
 }

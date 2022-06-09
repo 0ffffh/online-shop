@@ -1,30 +1,24 @@
 package com.k0s.security.user;
 
-public enum Role {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
 
-    ADMIN("admin"),
-    USER ("user"),
-    GUEST("guest");
+@Data
+@ToString
+@AllArgsConstructor
+public class Role implements GrantedAuthority {
 
-    private final String role;
+    private long id;
+    private String name;
 
-    Role( String role) {
-        this.role = role;
+    public Role(String name) {
+        this.name = name;
     }
 
-    public static Role getRole(String role) {
-        if(role == null || "".equals(role)){
-            return GUEST;
-        }
-        for (Role roles : Role.values()){
-            if (roles.role.equals(role)){
-                return roles;
-            }
-        }
-        return GUEST;
-    }
-
-    public String getRole(){
-        return role;
+    @Override
+    public String getAuthority() {
+        return getName();
     }
 }

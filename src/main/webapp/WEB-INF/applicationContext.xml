@@ -16,10 +16,6 @@
 
 
 
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
-        <constructor-arg ref="hikariConfig"/>
-    </bean>
-
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="jdbcUrl" value="${local.url}"/>
         <property name="username" value="${local.user}"/>
@@ -27,8 +23,19 @@
     </bean>
 
 
-    <bean id="userRowMapper" class="com.k0s.dao.jdbc.mapper.UserRowMapper" scope="singleton"/>
-    <bean id="productRowMapper" class="com.k0s.dao.jdbc.mapper.ProductRowMapper" scope="singleton"/>
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig"/>
+    </bean>
+
+
+    <bean id="jdbcUserDao" class="com.k0s.dao.jdbc.JdbcUserDao">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="userService" class="com.k0s.service.UserService">
+        <constructor-arg ref="jdbcUserDao"/>
+    </bean>
+
 </beans>
 
 

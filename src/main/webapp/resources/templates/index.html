@@ -11,13 +11,14 @@
 </head>
 <body class="bg-secondary">
 
-<#if role == "GUEST">
+<#if username == "anonymousUser">
 <a href="/login">
     <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Login</button>
 </a>
 <#else>
+
 <a href="/logout">
-    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout</button>
+    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">${username} Logout</button>
 </a>
 </#if>
 
@@ -26,21 +27,24 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">OnlineShop</a>
             <div class="collapse navbar-collapse">
-                <#if role == "ADMIN">
+                <#if ROLE_ADMIN??>
+                <#if ROLE_ADMIN == "ROLE_ADMIN">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <a class="nav-link active" href="/admin/product/add">
                         <button class="btn btn-outline-success" type="submit">Add product</button>
                     </a>
-                </ul>
-            </#if>
 
-            <#if role == "USER">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/user/cart">Cart</a>
-                </li>
+            </#if></#if>
+
+            <#if ROLE_USER??>
+            <#if ROLE_USER == "ROLE_USER">
+
+
+                    <a class="nav-link active" href="/user/cart">
+                        <button class="btn btn-outline-success" type="submit">Cart</button>
+                    </a>
             </ul>
-            </#if>
+            </#if></#if>
 
         <form class="d-flex" action="/search" method="GET">
             <input class="form-control me-2" name="search" type="search" placeholder="Search"
@@ -57,9 +61,10 @@
             <h2>Products
             </h2>
             <div class="st_row">
-                <#if role == "ADMIN">
+                <#if ROLE_ADMIN??>
+                <#if ROLE_ADMIN == "ROLE_ADMIN">
                 <div class="st_column id">ID</div>
-            </#if>
+            </#if></#if>
             <div class="st_column name">Name</div>
             <div class="st_column price">Price</div>
             <div class="st_column date">Date</div>
@@ -69,10 +74,10 @@
     <div class="st_table">
         <#list products as product>
         <div class="st_row">
-
-            <#if role == "ADMIN">
+            <#if ROLE_ADMIN??>
+            <#if ROLE_ADMIN == "ROLE_ADMIN">
             <div class="st_column id">${product.id?long?c}</div>
-        </#if>
+        </#if></#if>
         <div class="st_column name">
             <#if product.name??>
             ${product.name}
@@ -96,8 +101,8 @@
                 ${product.description}
             </#if>
         </div>
-
-        <#if role == "ADMIN">
+    <#if ROLE_ADMIN??>
+    <#if ROLE_ADMIN == "ROLE_ADMIN">
         <div class="st_column edit">
             <a href="/admin/product/edit?id=${product.id?long?c}">
                 <button type="button" class="btn btn-dark"  type="submit">Edit</button>
@@ -108,15 +113,15 @@
                 <button type="button" class="btn btn-dark"  type="submit">Delete</button>
             </a>
         </div>
-        </#if>
-
-        <#if role == "USER">
+        </#if></#if>
+<#if ROLE_USER??>
+<#if ROLE_USER == "ROLE_USER">
         <div class="st_column edit">
             <a href="/user/product/add?id=${product.id?long?c}">
                 <button type="button" class="btn btn-dark"  type="submit">Add to cart</button>
             </a>
         </div>
-        </#if>
+</#if></#if>
 
 </div>
 </#list>

@@ -3,12 +3,14 @@ package com.k0s.dao;
 import com.k0s.entity.Product;
 
 import java.util.List;
+import java.util.Optional;
 
+//@Repository
 public interface ProductDao {
 
     List<Product> getAll();
 
-    Product get(long id);
+    Optional<Product> get(long id);
 
     Product get(String name);
 

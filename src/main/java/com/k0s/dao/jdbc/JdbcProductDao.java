@@ -4,16 +4,15 @@ import com.k0s.dao.ProductDao;
 import com.k0s.dao.jdbc.mapper.ProductRowMapper;
 import com.k0s.entity.Product;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
-@Slf4j
 @Repository
 public class JdbcProductDao implements ProductDao {
 
@@ -25,12 +24,13 @@ public class JdbcProductDao implements ProductDao {
     private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name = ?, price = ?, creation_date = ?, description = ?  WHERE id = ?;";
     private static final String SEARCH_PRODUCT_QUERY = "SELECT id, name, price, creation_date, description FROM products WHERE LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?)";
 
+
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     private ProductRowMapper productRowMapper;
-
-    public JdbcProductDao(@Autowired DataSource dataSource) {
+    @Autowired
+    public JdbcProductDao( DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -40,12 +40,8 @@ public class JdbcProductDao implements ProductDao {
     }
 
     @Override
-    public Product get(long id) {
-        List<Product> productList =  jdbcTemplate.query(GET_PRODUCT_BY_ID_QUERY, productRowMapper, id);
-        if(productList.isEmpty()){
-            return null;
-        }
-        return productList.stream().findFirst().get();
+    public Optional<Product> get(long id) {
+        return Optional.of(jdbcTemplate.queryForObject(GET_PRODUCT_BY_ID_QUERY, productRowMapper, id));
     }
 
     @Override

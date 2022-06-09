@@ -1,7 +1,10 @@
 //package com.k0s.dao.jdbc;
 //
+//
 //import com.k0s.entity.Product;
-//import com.k0s.util.PropertiesReader;
+//
+//import com.zaxxer.hikari.HikariConfig;
+//import com.zaxxer.hikari.HikariDataSource;
 //import org.flywaydb.core.Flyway;
 //import org.junit.jupiter.api.BeforeAll;
 //import org.junit.jupiter.api.Test;
@@ -11,23 +14,25 @@
 //import javax.sql.DataSource;
 //import java.time.LocalDateTime;
 //import java.util.List;
-//import java.util.Properties;
 //
 //class JdbcProductDaoTest {
-//    private static PropertiesReader propertiesReader;
-//    private static DataSourceFactory dataSourceFactory;
-//    private static DataSource dataSource;
 //    private static JdbcProductDao jdbcProductDao;
 //
 //    @BeforeAll
 //    static void setUp() {
 //
+//        HikariConfig hikariConfig = new HikariConfig();
 //
-//        propertiesReader = new PropertiesReader("test-db.properties");
+////        hikariConfig.setJdbcUrl("jdbc:h2:mem:test");
+////        hikariConfig.setUsername("user");
+////        hikariConfig.setPassword("password");
 //
-//        Properties properties = propertiesReader.getProperties();
-//        dataSourceFactory = new DataSourceFactory();
-//        dataSource = dataSourceFactory.createDataSource(properties);
+////        hikariConfig.setJdbcUrl("jdbc:postgresql://ec2-99-80-170-190.eu-west-1.compute.amazonaws.com:5432/defpo01vks4v8d");
+////        hikariConfig.setUsername("zfcyuffrlcbpoh");
+////        hikariConfig.setPassword("14b61823f2de51f82cbe17c3d327fe50c887ac93c8989bdb89284e5fef632ed4");
+//
+//        DataSource dataSource = new HikariDataSource(hikariConfig);
+//
 //        jdbcProductDao = new JdbcProductDao(dataSource);
 //
 //

@@ -11,11 +11,14 @@
 <body class="bg-secondary">
 
 
-<a href="/logout">
-    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout
-    </button>
-</a>
+<!--<a href="/logout">-->
+<!--    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">Logout-->
+<!--    </button>-->
+<!--</a>-->
 
+<a href="/logout">
+    <button class="btn btn-outline-primary" type="submit" style="position:absolute; top:10px; right:10px">${username} Logout</button>
+</a>
 
 
 <div class="container">
@@ -28,7 +31,9 @@
 
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/user/cart">Cart</a>
+                        <a class="nav-link active" href="/user/cart">
+                            <button class="btn btn-outline-success" type="submit">Cart</button>
+                        </a>
                     </li>
 
                 </ul>
@@ -71,7 +76,7 @@
 
 
                 <div class="st_column edit">
-                    <a href="/user/product/delete?id=${product?index}">
+                    <a href="/user/product/delete?id=${product.id}">
                         <button type="button" class="btn btn-dark" type="submit">Delete</button>
                     </a>
                 </div>
